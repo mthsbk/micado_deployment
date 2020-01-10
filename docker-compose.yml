@@ -1,0 +1,364 @@
+version: '3.7'
+services:
+# FRONTEND
+  balancer:
+    image: traefik:v2.1
+    container_name: "traefik"
+#    command:
+      #- "--log.level=DEBUG"
+#      - "--api.insecure=true"
+#      - "--providers.docker=true"
+#      - "--providers.docker.exposedbydefault=false"
+#      - "--entrypoints.web.address=:80"
+    ports:
+      - "80:80"
+      - "8080:8080"
+      - "443:443" # The HTTPS port
+    volumes:
+      - ./traefik/traefik.toml:/etc/traefik/traefik.toml
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"    
+    networks:
+      - micado_net
+
+  migrants_app:
+    image: httpd:2.4
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.migrants_app.rule=Host(`${MIGRANTS_HOSTNAME}`)"
+      - "traefik.http.routers.migrants_app.entrypoints=web"
+    volumes:
+      - type: volume
+        source: migrants_app
+        target: /usr/local/apache2/htdocs
+    networks:
+      - micado_net
+ #   depends_on:
+ #     - api_gateway
+
+  pa_app:
+    image: httpd:2.4
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.pa_app.rule=Host(`${PA_HOSTNAME}`)"
+      - "traefik.http.routers.pa_app.entrypoints=web"
+    volumes:
+      - type: volume
+        source: pa_app
+        target: /usr/local/apache2/htdocs
+    networks:
+      - micado_net
+#    depends_on:
+#      - api_gateway
+
+  ngo_app:
+    image: httpd:2.4
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.pa_app.rule=Host(`${NGO_HOSTNAME}`)"
+      - "traefik.http.routers.pa_app.entrypoints=web"
+    volumes:
+      - type: volume
+        source: ong_app
+        target: /usr/local/apache2/htdocs
+    networks:
+      - micado_net
+    depends_on:
+      - api_gateway
+      
+# DATABASE STUFF
+
+  micado_db:
+    image: mdillon/postgis:11-alpine
+    environment:
+      POSTGRES_PASSWORD: micado
+      POSTGRES_USER: micado
+      POSTGRES_DB: micado
+    volumes:
+      - type: volume
+        source: postgres_data
+        target: /var/lib/postgresql/data
+      - type: volume
+        source: postgres_init
+        target: /docker-entrypoint-initdb.d
+    networks:
+      - micado_net
+
+  data_api:
+    image: postgrest/postgrest
+    environment:
+      PGRST_DB_URI: postgres://micado:micado@micado_db:5432/micado
+      PGRST_DB_SCHEMA: public
+      PGRST_DB_ANON_ROLE: micado #In production this role should not be the same as the one used for the connection
+    depends_on:
+      - micado_db
+    networks:
+      - micado_net
+
+  db_admin:
+    image: dpage/pgadmin4:4.15
+    environment:
+      PGADMIN_DEFAULT_EMAIL: gioppo@csi.it
+      PGADMIN_DEFAULT_PASSWORD: micadoadmin
+    labels:
+      - traefik.enable=true
+      - "traefik.http.routers.db_admin.rule=Host(`${DB_ADMIN_HOSTNAME}`)"
+      - "traefik.http.routers.db_admin.entrypoints=web"
+    depends_on:
+      - micado_db
+    networks:
+      - micado_net
+ 
+# API GATEWAY
+  api_gateway:   
+    image: wso2/wso2am:3.0.0
+    environment:
+      JAVA_OPTS: "-Dserver.hostname=\"0.0.0.0\" -Djava.rmi.server.hostname=\"192.168.4.26\" -Dorg.wso2.ignoreHostnameVerification=true -Dhttpclient.hostnameVerifier=AllowAll"
+    volumes:
+      - ./api_manager/deployment.toml:/home/wso2carbon/wso2am-3.0.0/repository/conf/deployment.toml
+    ports:
+      - "8280:8280"
+      - "8243:8243"
+      - "9443:9443"
+    labels:
+      - "traefik.enable=true"
+#      - "traefik.one.http.routers.api_gateway.rule=Host(`api.micado_dev.eu`)"
+#      - "traefik.one.http.services.api_gateway.loadbalancer.server.port=8280"
+      - "traefik.http.routers.api_gateway.rule=Host(`${GATEWAY_HOSTNAME}`)"
+      - "traefik.http.services.api_gateway.loadbalancer.server.port=9443"
+      - "traefik.http.routers.api_gateway.entrypoints=web-secure"
+#      - "traefik.two.frontend.rule=Host:apis.micado_dev.eu:"
+#      - "traefik.two.port=8243"
+#      - "traefik.two.docker.network=micado_net"
+#      - "traefik.three.frontend.rule=Host:gateway.micado_dev.eu:"
+#      - "traefik.three.port=9443"
+#      - "traefik.three.docker.network=micado_net"
+#    depends_on:
+#      - upload_service
+#      - chatbot
+#      - data_virtualization
+#      - data_api
+    networks:
+      - micado_net
+
+# IDENTITY
+  identity_server:
+    image: wso2/wso2is:5.9.0
+    ports:
+      - "9763:9763"
+      - "9443:9443"
+    healthcheck:
+      test: ["CMD", "curl", "-k", "-f", "https://localhost:9443/carbon/admin/login.jsp"]
+      interval: 5s
+      timeout: 120s
+      start_period: 100s
+    volumes:
+      - ./identity-server:/home/wso2carbon/wso2-config-volume
+    networks:
+      - micado_net
+ 
+# DASHBOARD
+  dashboard:
+#    image: amancevice/superset
+#    image: pietrocannalire/superset:base
+    image: metabase/metabase:v0.33.6
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.dashboard.rule=Host(`${DASHBOARD_HOSTNAME}`)"
+      - "traefik.http.services.dashboard.loadbalancer.server.port=3000"
+      - "traefik.http.routers.dashboard.entrypoints=web"
+    depends_on:
+      - micado_db
+#      - data_virtualization
+    environment:
+#      MAPBOX_API_KEY: ${MAPBOX_API_KEY}
+      MAPBOX_API_KEY: pk.eyJ1IjoiZ2lvcHBvbHVjYSIsImEiOiJjajhvd2d0bHIwODNsMnBwY3cwcjk2ZmU1In0.z4104Ptx7zgjW4yOjh7Wlg
+      MB_DB_FILE: /metabase-data/metabase.db
+    ports:
+      - "3000:3000"
+    volumes:
+      - type: volume
+        source: metabase_data
+        # target is the path in the container
+        target: /metabase-data
+    networks:
+      - micado_net
+
+  upload_service:
+    image: tusproject/tusd:v1.0.2
+    ports:
+      - "1080:1080"
+    command:
+      - -behind-proxy
+      - -port=1080
+#      - -hooks-dir=/hooks/
+      - -expose-metrics=true
+      - -metrics-path=/metrics
+      - -hooks-enabled-events=post-create,post-finish,pre-create
+      - -upload-dir=/data
+      - -hooks-http=http://node:8081
+    volumes:
+      - type: volume
+        source: tusd_hooks
+        # target is the path in the container
+        target: /hooks
+      - type: volume
+        source: tusd_data
+        # target is the path in the container
+        target: /data
+#    labels:
+#      - "traefik.enable=true"
+#      - "traefik.http.routers.upload_service.rule=Host(`upload.micado.csi.it`)"
+#      - "traefik.http.services.upload_service.loadbalancer.server.port=1080"
+#      - "traefik.http.routers.upload_service.entrypoints=web"
+    networks:
+      - micado_net
+
+  chatbot:
+    image: rasa/rasa:latest-full
+    ports:
+      - 5005:5005
+    volumes:
+      - /home/gioppo/Development/dockerfiles/micado_new/rasa:/app
+    command:
+      - run
+      - --cors
+      - "*"
+    volumes:
+      - type: volume
+        source: chatbot_data
+        # target is the path in the container
+        target: /app
+    networks:
+      - micado_net
+
+
+  data_virtualization:
+    image: gioppoluca/teiid:12.1.0
+    hostname: teiid
+#    environment:
+#      JAVA_OPTS: "-Dfile.encoding=UTF-8"
+    ports:
+      - "8080:8080"
+      - "9990:9990"
+      - "31000:31000"
+      - "35432:35432"
+    volumes:
+      - ./teiid/deployments:/opt/jboss/wildfly/standalone/deployments
+      - ./teiid/configuration/standalone-teiid.xml:/opt/jboss/wildfly/standalone/configuration/standalone-teiid.xml
+      - ./teiid/modules/org/postgresql:/opt/jboss/wildfly/modules/system/layers/base/org/postgresql
+      - ./teiid/csv:/csv
+      - ./teiid/configuration/application-roles.properties:/opt/jboss/wildfly/standalone/configuration/application-roles.properties
+      - ./teiid/configuration/application-users.properties:/opt/jboss/wildfly/standalone/configuration/application-users.properties
+    networks:
+      - micado_net
+
+#  limesurvey:
+#    build:
+#      context: ./limesurvey
+#      dockerfile: Dockerfile
+#    image: gioppoluca/limesurvey:latest
+#    ports:
+#      - "80:80"
+#    networks:
+#      - micado_net
+
+  dremio:
+    image: dremio/dremio-oss
+#    volumes:
+#      - /home/gioppo/Development/dockerfiles/micado/dremio:/opt/dremio/data
+    ports:
+      - "9047:9047"
+      - "31010:31010"
+      - "45678:45678"
+
+  swagger:
+    image: swaggerapi/swagger-ui
+    ports:
+      - "8081:8080"
+    expose:
+      - "8080"
+    environment:
+      API_URL: http://postgrest:3000/
+    depends_on:
+      - data_api
+  apache:
+    image: httpd:2.4
+    ports:
+      - "81:80"
+    volumes:
+      - ./httpd/web/micado/dist/micado:/usr/local/apache2/htdocs
+  
+  node:
+    image: node:10.16.0
+    ports:
+      - "8081:8081"
+    volumes:
+      - ./nodejs:/home/node/app
+    networks:
+      - micado_net
+    working_dir: /home/node/app
+    user: "node"
+    command: "nodejs ./httprequestdump.js"
+    
+volumes:
+  postgres_data:
+    driver: local
+    driver_opts:
+      type: none
+      # device is the path in the host that has to be absolute
+      device: $PWD/db_data
+      o: bind
+  postgres_init:
+    driver: local
+    driver_opts:
+      type: none
+      # device is the path in the host that has to be absolute
+      device: $PWD/db_init
+      o: bind
+  migrants_app:
+    driver: local
+    driver_opts:
+      type: none
+#      device: $PWD/sites/migrants_app
+      device: /home/gioppo/Development/dockerfiles/micado_apps/migrants/micado/dist/spa
+      o: bind
+  pa_app:
+    driver: local
+    driver_opts:
+      type: none
+      device: /home/gioppo/Development/dockerfiles/micado_apps/pa/micado/dist/spa
+      o: bind
+  ong_app:
+    driver: local
+    driver_opts:
+      type: none
+      device: $PWD/sites/ong_app
+      o: bind
+  chatbot_data:
+    driver: local
+    driver_opts:
+      type: none
+      device: $PWD/rasa
+      o: bind
+  metabase_data:
+    driver: local
+    driver_opts:
+      type: none
+      device: $PWD/metabase
+      o: bind
+  tusd_data:
+    driver: local
+    driver_opts:
+      type: none
+      device: $PWD/tusd_data
+      o: bind
+  tusd_hooks:
+    driver: local
+    driver_opts:
+      type: none
+      device: $PWD/tusd_config/hooks
+      o: bind
+           
+networks:
+  micado_net:
+    driver: bridge
