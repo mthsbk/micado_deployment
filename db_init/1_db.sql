@@ -44,6 +44,59 @@ CREATE TABLE "public"."migrant_address"
 )
 ;
 
+CREATE TABLE "public"."courses"
+(
+   course_id int PRIMARY KEY NOT NULL,
+   description text,
+   facility_id int,
+   organization_id int
+)
+;
+CREATE UNIQUE INDEX courses_pkey ON "public"."courses"(course_id)
+;
+CREATE TABLE "public"."education_facility"
+(
+   facility_id int,
+   address_id varchar(95),
+   description varchar(50)
+)
+;
+CREATE TABLE "public"."address"
+(
+   address_id varchar(95) PRIMARY KEY NOT NULL,
+   toponym varchar(200) NOT NULL,
+   longitude real NOT NULL,
+   latitude real NOT NULL
+)
+;
+CREATE UNIQUE INDEX address_pkey ON "public"."address"(address_id)
+;
+CREATE TABLE "public"."organization"
+(
+   organization_id int,
+   description varchar(50)
+)
+;
+
+
+INSERT INTO "public"."organization" (organization_id,description) VALUES (1,'Caritas');
+INSERT INTO "public"."organization" (organization_id,description) VALUES (2,'Public School');
+
+
+INSERT INTO "public"."education_facility" (facility_id,address_id,description) VALUES (1,'001','International school');
+
+
+INSERT INTO "public"."courses" (course_id,description,facility_id,organization_id) VALUES (1,'english course',1,1);
+
+
+
+
+
+INSERT INTO "public"."address" (address_id,toponym,longitude,latitude) VALUES ('001','Somewhere in TO',7.6764,45.0696);
+
+
+CREATE VIEW "public"."courses_full"
+ AS select c.*, f.description as facility, a.* from courses c, education_facility f, address a where c.facility_id=f.facility_id AND f.address_id=a.address_id;;
 
 
 INSERT INTO "public"."nationality" (nationality_id,nationality) VALUES ('AGO','Angola');
