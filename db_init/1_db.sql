@@ -8,7 +8,7 @@ begin;
 CREATE TABLE "public"."address"
 (
    address_id varchar(95) PRIMARY KEY NOT NULL,
-   location varchar(200) NOT NULL,
+   toponym varchar(200) NOT NULL,
    longitude float(19) NOT NULL,
    latitude float(19) NOT NULL
 )
@@ -52,8 +52,10 @@ CREATE TABLE "public"."courses"
    organization_id int
 )
 ;
-CREATE UNIQUE INDEX courses_pkey ON "public"."courses"(course_id)
-;
+
+--CREATE UNIQUE INDEX courses_pkey ON "public"."courses"(course_id)
+--;
+
 CREATE TABLE "public"."education_facility"
 (
    facility_id int,
@@ -61,16 +63,9 @@ CREATE TABLE "public"."education_facility"
    description varchar(50)
 )
 ;
-CREATE TABLE "public"."address"
-(
-   address_id varchar(95) PRIMARY KEY NOT NULL,
-   toponym varchar(200) NOT NULL,
-   longitude real NOT NULL,
-   latitude real NOT NULL
-)
-;
-CREATE UNIQUE INDEX address_pkey ON "public"."address"(address_id)
-;
+
+
+
 CREATE TABLE "public"."organization"
 (
    organization_id int,
@@ -103,8 +98,6 @@ INSERT INTO "public"."nationality" (nationality_id,nationality) VALUES ('AGO','A
 
 INSERT INTO "public"."nationality" (nationality_id,nationality) VALUES ('CMR','Camerun');
 
-
-INSERT INTO "public"."address" (address_id,location,longitude,latitude) VALUES ('001','Somewhere in TO',7.6764,45.0696);
 
 
 INSERT INTO "public"."migrant" (migrant_id,name,nationality_id,birthday) VALUES ('001','migrant1','CMR', '1969-01-28');

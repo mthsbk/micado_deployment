@@ -1,6 +1,6 @@
 [server]
-hostname = "localhost"
-node_ip = "127.0.0.1"
+hostname = "identity.micado.csi.it"
+node_ip = "0.0.0.0"
 base_path = "https://$ref{server.hostname}:${carbon.management.port}"
 
 [super_admin]
@@ -9,27 +9,54 @@ password = "admin"
 create_admin_account = true
 
 [user_store]
-type = "read_write_ldap"
-connection_url = "ldap://localhost:${Ports.EmbeddedLDAP.LDAPServerPort}"
-connection_name = "uid=admin,ou=system"
-connection_password = "admin"
-base_dn = "dc=wso2,dc=org"      #refers the base dn on which the user and group search bases will be generated
+type = "database"
+#type = "read_write_ldap"
+#connection_url = "ldap://localhost:${Ports.EmbeddedLDAP.LDAPServerPort}"
+#connection_name = "uid=admin,ou=system"
+#connection_password = "admin"
+#base_dn = "dc=wso2,dc=org"      #refers the base dn on which the user and group search bases will be generated
+
+[database.user]
+url = "jdbc:postgresql://micado_db:5432/micado"
+username = "micado"
+password = "micado"
+driver = "org.postgresql.Driver"
+
+[realm_manager]
+data_source = "WSO2USER_DB"
+
+#[database.identity_db]
+#url = "jdbc:mysql://mysql:3306/WSO2IS_IDENTITY_DB?autoReconnect=true&amp;useSSL=false"
+#username = "wso2carbon"
+#password = "wso2carbon"
+#driver = "com.mysql.cj.jdbc.Driver"
+#[database.identity_db.pool_options]
+#validationQuery="SELECT 1"
 
 [database.identity_db]
-url = "jdbc:mysql://mysql:3306/WSO2IS_IDENTITY_DB?autoReconnect=true&amp;useSSL=false"
-username = "wso2carbon"
-password = "wso2carbon"
-driver = "com.mysql.cj.jdbc.Driver"
-[database.identity_db.pool_options]
-validationQuery="SELECT 1"
+type = "postgre"
+hostname = "micado_db"
+name = "micado"
+username = "mmicado"
+password = "micado"
+port = "5432"
+
+
+#[database.shared_db]
+#url = "jdbc:mysql://mysql:3306/WSO2IS_SHARED_DB?autoReconnect=true&amp;useSSL=false"
+#username = "wso2carbon"
+#password = "wso2carbon"
+#driver = "com.mysql.cj.jdbc.Driver"
+#[database.shared_db.pool_options]
+#validationQuery="SELECT 1"
 
 [database.shared_db]
-url = "jdbc:mysql://mysql:3306/WSO2IS_SHARED_DB?autoReconnect=true&amp;useSSL=false"
-username = "wso2carbon"
-password = "wso2carbon"
-driver = "com.mysql.cj.jdbc.Driver"
-[database.shared_db.pool_options]
-validationQuery="SELECT 1"
+type = "postgre"
+hostname = "micado_db"
+name = "wso2_identity"
+username = "wso2_identity"
+password = "wso2_identity"
+port = "5432"
 
 [keystore.primary]
 name = "wso2carbon.jks"
