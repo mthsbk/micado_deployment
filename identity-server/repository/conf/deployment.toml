@@ -36,9 +36,9 @@ data_source = "WSO2USER_DB"
 [database.identity_db]
 type = "postgre"
 hostname = "micado_db"
-name = "micado"
-username = "mmicado"
-password = "micado"
+name = "wso2_identity"
+username = "wso2_identity"
+password = "wso2_identity"
 port = "5432"
 
 

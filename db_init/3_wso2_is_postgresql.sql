@@ -1,13 +1,10 @@
-CREATE DATABASE wso2_identity;
-CREATE USER wso2_identity WITH PASSWORD 'wso2_identity';
-GRANT ALL PRIVILEGES ON DATABASE "wso2_identity" to wso2_identity;
 
 --Begin Connect--
 \connect wso2_identity wso2_identity
 
 begin;
 
-DROP TABLE IF EXISTS REG_CLUSTER_LOCK;
+--DROP TABLE IF EXISTS REG_CLUSTER_LOCK;
 CREATE TABLE REG_CLUSTER_LOCK (
              REG_LOCK_NAME VARCHAR (20),
              REG_LOCK_STATUS VARCHAR (20),
@@ -574,3 +571,8 @@ CREATE TABLE UM_HYBRID_REMEMBER_ME(
             UM_TENANT_ID INTEGER DEFAULT 0,
 			PRIMARY KEY (UM_ID, UM_TENANT_ID)
 );
+
+\dt
+
+commit;
+--End Connect--
