@@ -25,4 +25,4 @@ docker-compose up
 
 ### Funded by
 
-![GitHub Logo](https://github.com/micado-eu/MICADO/img/Flag_of_Europe.svg_.png)This project has received funding from the European Union’s H2020 Innovation Action under Grant Agreement No 822717.
+![EU Logo](/micado-eu/MICADO/img/Flag_of_Europe.svg_.png)This project has received funding from the European Union’s H2020 Innovation Action under Grant Agreement No 822717.
