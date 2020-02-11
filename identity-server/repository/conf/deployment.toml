@@ -1,5 +1,6 @@
 [server]
-hostname = "identity.micado.csi.it"
+#hostname = "identity.micado.csi.it"
+hostname = "0.0.0.0"
 node_ip = "0.0.0.0"
 base_path = "https://$ref{server.hostname}:${carbon.management.port}"
 
@@ -17,9 +18,9 @@ type = "database"
 #base_dn = "dc=wso2,dc=org"      #refers the base dn on which the user and group search bases will be generated
 
 [database.user]
-url = "jdbc:postgresql://micado_db:5432/micado"
-username = "micado"
-password = "micado"
+url = "jdbc:postgresql://micado_db:5432/wso2_identity"
+username = "wso2_identity"
+password = "wso2_identity"
 driver = "org.postgresql.Driver"
 
 [realm_manager]

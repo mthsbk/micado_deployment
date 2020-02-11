@@ -1,4 +1,4 @@
-\connect micado micado
+\connect wso2_identity wso2_identity
 
 begin;
 

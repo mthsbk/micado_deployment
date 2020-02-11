@@ -1,3 +1,6 @@
+\connect wso2_identity wso2_identity
+
+
 CREATE OR REPLACE PROCEDURE WSO2_TOKEN_CLEANUP_SP() AS $$
 DECLARE
 
