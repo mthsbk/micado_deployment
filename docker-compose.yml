@@ -2,8 +2,7 @@ version: '3.7'
 services:
 # FRONTEND
   balancer:
-    image: traefik:v2.1
-#    container_name: "traefik"
+    image: traefik:v2.1.4
 #    command:
       #- "--log.level=DEBUG"
 #      - "--api.insecure=true"
@@ -14,15 +13,45 @@ services:
       - "com.centurylinklabs.watchtower.enable=false"
     ports:
       - "80:80"
-      - "8081:8080"
+      - "8080:8080"
       - "443:443" # The HTTPS port
     volumes:
       - ./traefik/traefik.toml:/etc/traefik/traefik.toml
       - ./traefik/dynamic.toml:/etc/traefik/dynamic.toml
       - ./traefik/certs:/etc/certs # SSL Development certificates
-      - "/var/run/docker.sock:/var/run/docker.sock:ro"    
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"
     networks:
       - micado_net
+
+  nginx:
+    image: nginx
+    volumes:
+      - type: volume
+        source: data_mig
+        target: /usr/share/nginx/html
+        read_only: true
+        volume:
+          nocopy: true
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.nginx.rule=Host(`${MIGRANTS_HOSTNAME}`)"
+      - "traefik.http.routers.nginx.entrypoints=web"
+      - "traefik.http.routers.nginx2.rule=Host(`${MIGRANTS_HOSTNAME}`)"
+      - "traefik.http.routers.nginx2.entrypoints=web-secure"
+      - "traefik.http.services.nginx.loadbalancer.server.port=80"
+      - "traefik.http.routers.nginx2.tls=true"
+    networks:
+      - micado_net
+
+  data_migrants:
+    command: "sh -c 'rm -rf /var/www/html/* && ls -lat /var/www/html/ && cp -ra /var/www/html2/* /var/www/html/ && ls -lat /var/www/html/ && trap : TERM INT; (while true; do sleep 1000; done) & wait'"
+    #TODO more elegant copy like copy with mv
+    image: micadoproject/migrant_app_site # change tag and redeploy stack
+    volumes:
+      - data_mig:/var/www/html
+    networks:
+      - micado_net
+
 
   migrants_app:
     image: httpd:2.4
@@ -68,7 +97,7 @@ services:
       - micado_net
     depends_on:
       - api_gateway
-      
+
 # DATABASE STUFF
 
   micado_db:
@@ -90,7 +119,7 @@ services:
       - micado_net
 
   data_api:
-    image: postgrest/postgrest
+    image: postgrest/postgrest:v6.0.2
     environment:
       PGRST_DB_URI: postgres://micado:micado@micado_db:5432/micado
       PGRST_DB_SCHEMA: public
@@ -103,9 +132,9 @@ services:
       - micado_net
 
   db_admin:
-    image: dpage/pgadmin4:4.15
+    image: dpage/pgadmin4:4.18
     environment:
-      PGADMIN_DEFAULT_EMAIL: gioppo@csi.it
+      PGADMIN_DEFAULT_EMAIL: micado@csi.it
       PGADMIN_DEFAULT_PASSWORD: micadoadmin
     labels:
       - traefik.enable=true
@@ -115,9 +144,9 @@ services:
       - micado_db
     networks:
       - micado_net
- 
+
 # API GATEWAY
-  api_gateway:   
+  api_gateway:
     image: wso2/wso2am:3.0.0
     environment:
       JAVA_OPTS: "-Dserver.hostname=\"0.0.0.0\" -Djava.rmi.server.hostname=\"192.168.4.26\" -Dorg.wso2.ignoreHostnameVerification=true -Dhttpclient.hostnameVerifier=AllowAll"
@@ -150,7 +179,7 @@ services:
 
 # IDENTITY
   identity_server:
-    image: wso2/wso2is:5.9.0
+    image: wso2/wso2is-km:5.9.0
     hostname: identity.micado.csi.it
     ports:
       - "9763:9763"
@@ -163,27 +192,11 @@ services:
     labels:
       - "com.centurylinklabs.watchtower.enable=false"
       - "traefik.enable=true"
-
       - "traefik.tcp.routers.identity_server.rule=HostSNI(`${IDENTITY_HOSTNAME}`)"
       - "traefik.tcp.routers.identity_server.tls.passthrough=true"
       - "traefik.tcp.routers.identity_server.service=identity_server_service"
       - "traefik.tcp.services.identity_server_service.loadbalancer.server.port=9443"
       - "traefik.tcp.routers.identity_server.entrypoints=web-secure"
-
-#      - "traefik.http.routers.identity_server_http.rule=Host(`${IDENTITY_HOSTNAME}`)"
-#      - "traefik.http.routers.identity_server_http.middlewares=https_redirect"
-#      - "traefik.http.routers.identity_server_http.entrypoints=web"
-#      - "traefik.http.routers.identity_server_https.rule=Host(`${IDENTITY_HOSTNAME}`)"
-#      - "traefik.http.routers.identity_server_https.tls=true"
-#      - "traefik.tcp.routers.tcprouter1.tls.passthrough=true"
-#      - "traefik.http.routers.identity_server_https.entrypoints=web-secure"
-#      - "traefik.http.middlewares.https_redirect.redirectscheme.scheme=https"
-#      - "traefik.http.services.identity_server.loadbalancer.server.port=9443"
-#      - "traefik.http.middlewares.https_redirect.forwardauth.tls.insecureskipverify=true"
-#      - "traefik.tcp.services.identity_server.loadbalancer.server.port=9443"
-#      - "traefik.http.services.identity_server.loadbalancer.server.scheme=https"
-#      - "traefik.http.services.identity_server.loadbalancer.server.scheme=https"
- #     - traefik.port=9443
     volumes:
       - ./identity-server:/home/wso2carbon/wso2-config-volume
       - ./pg_lib/postgresql-42.2.9.jar:/home/wso2carbon/wso2is-5.9.0/repository/components/lib/postgresql-42.2.9.jar
@@ -191,12 +204,10 @@ services:
       - micado_db
     networks:
       - micado_net
- 
+
 # DASHBOARD
   dashboard:
-#    image: amancevice/superset
-#    image: pietrocannalire/superset:base
-    image: metabase/metabase:v0.33.6
+    image: metabase/metabase:v0.34.2
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.dashboard.rule=Host(`${DASHBOARD_HOSTNAME}`)"
@@ -204,7 +215,6 @@ services:
       - "traefik.http.routers.dashboard.entrypoints=web"
     depends_on:
       - micado_db
-#      - data_virtualization
     environment:
 #      MAPBOX_API_KEY: ${MAPBOX_API_KEY}
       MAPBOX_API_KEY: pk.eyJ1IjoiZ2lvcHBvbHVjYSIsImEiOiJjajhvd2d0bHIwODNsMnBwY3cwcjk2ZmU1In0.z4104Ptx7zgjW4yOjh7Wlg
@@ -294,24 +304,6 @@ services:
     networks:
       - micado_net
 
-#  limesurvey:
-#    build:
-#      context: ./limesurvey
-#      dockerfile: Dockerfile
-#    image: gioppoluca/limesurvey:latest
-#    ports:
-#      - "80:80"
-#    networks:
-#      - micado_net
-
-  dremio:
-    image: dremio/dremio-oss
-#    volumes:
-#      - /home/gioppo/Development/dockerfiles/micado/dremio:/opt/dremio/data
-    ports:
-      - "9047:9047"
-      - "31010:31010"
-      - "45678:45678"
 
   swagger:
     image: swaggerapi/swagger-ui
@@ -324,13 +316,6 @@ services:
     depends_on:
       - data_api
 
-  apache:
-    image: httpd:2.4
-    ports:
-      - "81:80"
-    volumes:
-      - ./httpd/web/micado/dist/micado:/usr/local/apache2/htdocs
-  
   node:
     image: node:10.16.0
     ports:
@@ -356,7 +341,7 @@ services:
     command: --interval 300
     networks:
       - micado_net
-    
+
 volumes:
   postgres_data:
     driver: local
@@ -415,7 +400,9 @@ volumes:
       type: none
       device: $PWD/tusd_config/hooks
       o: bind
-           
+  data_mig:
+    driver: local
+
 networks:
   micado_net:
     driver: bridge
