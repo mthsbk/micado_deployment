@@ -53,18 +53,18 @@ services:
       - micado_net
 
 
-  migrants_app:
-    image: httpd:2.4
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.migrants_app.rule=Host(`${MIGRANTS_HOSTNAME}`)"
-      - "traefik.http.routers.migrants_app.entrypoints=web"
-    volumes:
-      - type: volume
-        source: migrants_app
-        target: /usr/local/apache2/htdocs
-    networks:
-      - micado_net
+#  migrants_app:
+#    image: httpd:2.4
+#    labels:
+#      - "traefik.enable=true"
+#      - "traefik.http.routers.migrants_app.rule=Host(`${MIGRANTS_HOSTNAME}`)"
+#      - "traefik.http.routers.migrants_app.entrypoints=web"
+#    volumes:
+#      - type: volume
+#        source: migrants_app
+#        target: /usr/local/apache2/htdocs
+#    networks:
+#      - micado_net
  #   depends_on:
  #     - api_gateway
 
