@@ -26,6 +26,7 @@ services:
   nginx:
     image: nginx
     volumes:
+#      - $PWD/nginx/nginx.conf:/etc/nginx/nginx.conf
       - type: volume
         source: data_mig
         target: /usr/share/nginx/html
