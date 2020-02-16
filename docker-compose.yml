@@ -151,18 +151,19 @@ services:
     environment:
       JAVA_OPTS: "-Dserver.hostname=\"0.0.0.0\" -Djava.rmi.server.hostname=\"192.168.4.26\" -Dorg.wso2.ignoreHostnameVerification=true -Dhttpclient.hostnameVerifier=AllowAll"
     volumes:
-      - ./api_manager/deployment.toml:/home/wso2carbon/wso2am-3.0.0/repository/conf/deployment.toml
+#      - ./api_manager/deployment.toml:/home/wso2carbon/wso2am-3.0.0/repository/conf/deployment.toml
+      - ./api_manager:/home/wso2carbon/wso2-config-volume
       - ./pg_lib/postgresql-42.2.9.jar:/home/wso2carbon/wso2am-3.0.0/repository/components/lib/postgresql-42.2.9.jar
-
     ports:
       - "8280:8280"
       - "8243:8243"
       - "9443:9443"
     labels:
+      - "com.centurylinklabs.watchtower.enable=false"
       - "traefik.enable=true"
 #      - "traefik.one.http.routers.api_gateway.rule=Host(`api.micado_dev.eu`)"
 #      - "traefik.one.http.services.api_gateway.loadbalancer.server.port=8280"
-      - "traefik.http.routers.api_gateway.rule=Host(`${GATEWAY_HOSTNAME}`)"
+      - "traefik.tcp.routers.api_gateway.rule=HostSNI(`${GATEWAY_HOSTNAME}`)"
       - "traefik.tcp.routers.api_gateway.tls.passthrough=true"
       - "traefik.tcp.routers.api_gateway.service=api_gateway_service"
       - "traefik.tcp.services.api_gateway_service.loadbalancer.server.port=9443"
@@ -419,4 +420,4 @@ networks:
     ipam:
       driver: default
       config:
-      - subnet:  172.24.0.1/16
+      - subnet:  172.24.0.0/16

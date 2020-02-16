@@ -1,6 +1,6 @@
 [server]
-hostname = "0.0.0.0"
-node_ip = "127.0.0.1"
+hostname = "api.micadoproject.eu"
+node_ip = "0.0.0.0"
 #offset=0
 mode = "single" #single or ha
 base_path = "${carbon.protocol}://${carbon.host}:${carbon.management.port}"
@@ -17,20 +17,24 @@ type = "database"
 
 [database.shared_db]
 type = "postgre"
-url = "jdbc:postgresql://localhost:5432/shared_db"
-username = "regadmin"
-password = "regadmin"
+url = "jdbc:postgresql://micado_db:5432/wso2_api"
+username = "wso2_api"
+password = "wso2_api"
 driver = "org.postgresql.Driver"
 validationQuery = "SELECT 1"
 pool_options.maxActive = 100
 pool_options.maxWait = 10000
 pool_options.validationInterval = 10000
 
+[transport.https.properties]
+proxyPort = 443
+server="MICADO API gateway"
+
 [database.apim_db]
 type = "postgre"
-url = "jdbc:postgresql://localhost:5432/apim_db"
-username = "apimadmin"
-password = "apimadmin"
+url = "jdbc:postgresql://micado_db:5432/wso2_api"
+username = "wso2_api"
+password = "wso2_api"
 driver = "org.postgresql.Driver"
 validationQuery = "SELECT 1"
 pool_options.maxActive = 50
@@ -68,6 +72,10 @@ ws_endpoint = "ws://localhost:9099"
 wss_endpoint = "wss://localhost:8099"
 http_endpoint = "http://localhost:${http.nio.port}"
 https_endpoint = "https://localhost:${https.nio.port}"
+
+
+[transport.http.properties]
+server="MICADO API gateway"
 
 #[apim.cache.gateway_token]
 #enable = true

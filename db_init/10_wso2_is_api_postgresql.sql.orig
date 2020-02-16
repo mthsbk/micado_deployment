@@ -1,3 +1,5 @@
+\connect wso2_identity wso2_identity
+
 BEGIN TRANSACTION;
 
 -- Start of IDN Tables --

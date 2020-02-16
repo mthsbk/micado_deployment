@@ -1,5 +1,5 @@
 [tls]
 
   [[tls.certificates]]
-    certFile = "/etc/certs/micado.csi.it+1.pem"
-    keyFile = "/etc/certs/micado.csi.it+1-key.pem"
+    certFile = "/etc/certs/micadoproject.eu+1.pem"
+    keyFile = "/etc/certs/micadoproject.eu+1-key.pem"
