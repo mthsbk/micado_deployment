@@ -8,8 +8,6 @@
 [api]
   insecure = true
 
-[accessLog]
-
 [providers]
   [providers.docker]
     endpoint = "unix:///var/run/docker.sock"
