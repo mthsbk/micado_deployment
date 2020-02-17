@@ -11,10 +11,9 @@ services:
       - NET_ADMIN
       - NET_RAW
     volumes:
-      - fail2ban_logs:/var/log:ro
+      - ./fail2ban_logs:/var/log:ro
       - fail2ban_data:/data
-    networks:
-      - micado_net
+
 
   balancer:
     image: traefik:v2.1.4
@@ -35,7 +34,7 @@ services:
       - ./traefik/dynamic.toml:/etc/traefik/dynamic.toml
       - ./traefik/certs:/etc/certs # SSL Development certificates
       - "/var/run/docker.sock:/var/run/docker.sock:ro"
-      - fail2ban_logs:/var/log
+      - $PWD/fail2ban_logs:/var/log
     networks:
       - micado_net
 
@@ -436,8 +435,7 @@ volumes:
       o: bind
   data_mig:
     driver: local
-  fail2ban_logs:
-    driver: local
+
 
 networks:
   micado_net:
