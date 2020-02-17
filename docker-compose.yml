@@ -5,7 +5,7 @@ services:
     image: crazymax/fail2ban:latest
     network_mode: "host"
     environment:
-      TZ: Europe/Paris
+      TZ: Europe/Rome
       F2B_IPTABLES_CHAIN: DOCKER-USER
     cap_add:
       - NET_ADMIN
@@ -23,10 +23,15 @@ services:
 #      - "--providers.docker=true"
 #      - "--providers.docker.exposedbydefault=false"
 #      - "--entrypoints.web.address=:80"
+    environment:
+      TZ: Europe/Rome
     labels:
       - "com.centurylinklabs.watchtower.enable=false"
     ports:
-      - "80:80"
+      - target: 80
+        published: 80
+        protocol: tcp
+        mode: host
       - "8080:8080"
       - "443:443" # The HTTPS port
     volumes:
