@@ -1,6 +1,21 @@
 version: '3.7'
 services:
 # FRONTEND
+  fail2ban:
+    image: crazymax/fail2ban:latest
+    network_mode: "host"
+    environment:
+      TZ: Europe/Paris
+      F2B_IPTABLES_CHAIN: DOCKER-USER
+    cap_add:
+      - NET_ADMIN
+      - NET_RAW
+    volumes:
+      - fail2ban_logs:/var/log:ro
+      - fail2ban_data:/data
+    networks:
+      - micado_net
+
   balancer:
     image: traefik:v2.1.4
 #    command:
@@ -20,6 +35,7 @@ services:
       - ./traefik/dynamic.toml:/etc/traefik/dynamic.toml
       - ./traefik/certs:/etc/certs # SSL Development certificates
       - "/var/run/docker.sock:/var/run/docker.sock:ro"
+      - fail2ban_logs:/var/log
     networks:
       - micado_net
 
@@ -412,7 +428,15 @@ volumes:
       type: none
       device: $PWD/tusd_config/hooks
       o: bind
+  fail2ban_data:
+    driver: local
+    driver_opts:
+      type: none
+      device: $PWD/fail2ban
+      o: bind
   data_mig:
+    driver: local
+  fail2ban_logs:
     driver: local
 
 networks:

@@ -18,3 +18,12 @@
   [providers.file]
     filename = "/etc/traefik/dynamic.toml"
     watch = true
+
+[accessLog]
+  filePath = "/var/log/access.log"
+#  format = "foobar"
+#  bufferingSize = 42
+  [accessLog.filters]
+    statusCodes = ["400-499"]
+    retryAttempts = true
+    minDuration = 42
