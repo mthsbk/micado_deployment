@@ -388,10 +388,12 @@ services:
       - "traefik.enable=true"
       - "traefik.http.routers.countly-api.rule=Host(`${ANALYTIC_HOSTNAME}`) && PathPrefix(`/i`)"
       - "traefik.http.routers.countly-api.entrypoints=web"
-      - "traefik.http.services.countly-api.loadbalancer.server.port=3001"
+      - "traefik.http.routers.countly-api.service=countly-api_service"
+      - "traefik.http.services.countly-api_service.loadbalancer.server.port=3001"
       - "traefik.http.routers.countly-api2.rule=Host(`${ANALYTIC_HOSTNAME}`) && PathPrefix(`/o`)"
       - "traefik.http.routers.countly-api2.entrypoints=web"
-      - "traefik.http.services.countly-api2.loadbalancer.server.port=3001"
+      - "traefik.http.routers.countly-api2.service=countly-api_service2"
+      - "traefik.http.services.countly-api_service2.loadbalancer.server.port=3001"
     networks:
       - micado_net
     depends_on:
@@ -418,7 +420,8 @@ services:
       - "traefik.enable=true"
       - "traefik.http.routers.countly-frontend.rule=Host(`${ANALYTIC_HOSTNAME}`)"
       - "traefik.http.routers.countly-frontend.entrypoints=web"
-      - "traefik.http.services.countly-frontend.loadbalancer.server.port=6001"
+      - "traefik.http.routers.countly-frontend.service=countly-frontend_service"
+      - "traefik.http.services.countly-frontend_service.loadbalancer.server.port=6001"
     depends_on:
       - mongodb
 #    deploy:
