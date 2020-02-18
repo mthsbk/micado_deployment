@@ -21,7 +21,7 @@
 <!-- footer -->
 <footer class="footer">
     <div class="container-fluid">
-        <p>WSO2 API Manager | &copy;
+        <p>WSO2 API Manager GIOPPO| &copy;
             <script>document.write(new Date().getFullYear());</script>
             <a href="https://wso2.com/"
                target="_blank">
