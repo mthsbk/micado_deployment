@@ -93,6 +93,8 @@ services:
       - "traefik.http.services.countly_frontend_service.loadbalancer.server.port=6001"
     networks:
       - micado_net
+    depends_on:
+      - countly_api
 
   data_migrants:
     command: "sh -c 'rm -rf /var/www/html/* && ls -lat /var/www/html/ && cp -ra /var/www/html2/* /var/www/html/ && ls -lat /var/www/html/ && trap : TERM INT; (while true; do sleep 1000; done) & wait'"
