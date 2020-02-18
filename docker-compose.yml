@@ -79,6 +79,18 @@ services:
       - "traefik.http.routers.nginx4.tls=true"
       - "traefik.http.routers.nginx4.service=nginx4"
       - "traefik.http.services.nginx4.loadbalancer.server.port=443"
+      - "traefik.http.routers.countly_api.rule=Host(`${ANALYTIC_HOSTNAME}`) && PathPrefix(`/i`)"
+      - "traefik.http.routers.countly_api.entrypoints=web"
+      - "traefik.http.routers.countly_api.service=ccountly_api_service"
+      - "traefik.http.services.countly_api_service.loadbalancer.server.port=3001"
+      - "traefik.http.routers.countly_api2.rule=Host(`${ANALYTIC_HOSTNAME}`) && PathPrefix(`/o`)"
+      - "traefik.http.routers.countly_api2.entrypoints=web"
+      - "traefik.http.routers.countly_api2.service=countly_api_service2"
+      - "traefik.http.services.countly_api_service2.loadbalancer.server.port=3001"
+      - "traefik.http.routers.countly_frontend.rule=Host(`${ANALYTIC_HOSTNAME}`)"
+      - "traefik.http.routers.countly_frontend.entrypoints=web"
+      - "traefik.http.routers.countly_frontend.service=countly_frontend_service"
+      - "traefik.http.services.countly_frontend_service.loadbalancer.server.port=6001"
     networks:
       - micado_net
 
@@ -363,7 +375,7 @@ services:
     depends_on:
       - mongodb
 
-  countly-api:
+  countly_api:
     image: 'countly/api:19.08.1'
     # Enterprise Edition: image: 'gcr.io/countly-01/api:19.08.1'
     environment:
@@ -384,22 +396,22 @@ services:
 #        window: 120s
     ports:
       - "3001:3001"
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.countly-api.rule=Host(`${ANALYTIC_HOSTNAME}`) && PathPrefix(`/i`)"
-      - "traefik.http.routers.countly-api.entrypoints=web"
-      - "traefik.http.routers.countly-api.service=countly-api_service"
-      - "traefik.http.services.countly-api_service.loadbalancer.server.port=3001"
-      - "traefik.http.routers.countly-api2.rule=Host(`${ANALYTIC_HOSTNAME}`) && PathPrefix(`/o`)"
-      - "traefik.http.routers.countly-api2.entrypoints=web"
-      - "traefik.http.routers.countly-api2.service=countly-api_service2"
-      - "traefik.http.services.countly-api_service2.loadbalancer.server.port=3001"
+#    labels:
+#      - "traefik.enable=true"
+#      - "traefik.http.routers.countly_api.rule=Host(`${ANALYTIC_HOSTNAME}`) && PathPrefix(`/i`)"
+#      - "traefik.http.routers.countly_api.entrypoints=web"
+#      - "traefik.http.routers.countly_api.service=ccountly_api_service"
+#      - "traefik.http.services.countly_api_service.loadbalancer.server.port=3001"
+#      - "traefik.http.routers.countly_api2.rule=Host(`${ANALYTIC_HOSTNAME}`) && PathPrefix(`/o`)"
+#      - "traefik.http.routers.countly_api2.entrypoints=web"
+#      - "traefik.http.routers.countly_api2.service=countly_api_service2"
+#      - "traefik.http.services.countly_api_service2.loadbalancer.server.port=3001"
     networks:
       - micado_net
     depends_on:
       - mongodb
 
-  countly-frontend:
+  countly_frontend:
     image: 'countly/frontend:19.08.1'
     # Enterprise Edition: image: 'gcr.io/countly-01/api:19.08.1'
     environment:
@@ -416,12 +428,12 @@ services:
       - micado_net
     ports:
       - "6001:6001"
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.countly-frontend.rule=Host(`${ANALYTIC_HOSTNAME}`)"
-      - "traefik.http.routers.countly-frontend.entrypoints=web"
-      - "traefik.http.routers.countly-frontend.service=countly-frontend_service"
-      - "traefik.http.services.countly-frontend_service.loadbalancer.server.port=6001"
+#    labels:
+#      - "traefik.enable=true"
+#      - "traefik.http.routers.countly_frontend.rule=Host(`${ANALYTIC_HOSTNAME}`)"
+#      - "traefik.http.routers.countly_frontend.entrypoints=web"
+#      - "traefik.http.routers.countly_frontend.service=countly_frontend_service"
+#      - "traefik.http.services.countly_frontend_service.loadbalancer.server.port=6001"
     depends_on:
       - mongodb
 #    deploy:
