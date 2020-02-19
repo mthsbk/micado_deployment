@@ -282,6 +282,7 @@ services:
   dashboard:
     image: metabase/metabase:v0.34.2
     labels:
+      - "com.centurylinklabs.watchtower.enable=false"
       - "traefik.enable=true"
       - "traefik.http.routers.dashboard.rule=Host(`${DASHBOARD_HOSTNAME}`)"
       - "traefik.http.services.dashboard.loadbalancer.server.port=3000"
@@ -363,6 +364,8 @@ services:
 #      MONGO_INITDB_ROOT_USERNAME: countly
 #      MONGO_INITDB_ROOT_PASSWORD: countly
 #      MONGO_INITDB_DATABASE: countly
+    labels:
+      - "com.centurylinklabs.watchtower.enable=false"
     volumes:
       - mongo_data:/data/db
     networks:
@@ -403,7 +406,8 @@ services:
 #        window: 120s
     ports:
       - "3001:3001"
-#    labels:
+    labels:
+      - "com.centurylinklabs.watchtower.enable=false"
 #      - "traefik.enable=true"
 #      - "traefik.http.routers.countly_api.rule=Host(`${ANALYTIC_HOSTNAME}`) && PathPrefix(`/i`)"
 #      - "traefik.http.routers.countly_api.entrypoints=web"
@@ -435,7 +439,8 @@ services:
       - micado_net
     ports:
       - "6001:6001"
-#    labels:
+    labels:
+      - "com.centurylinklabs.watchtower.enable=false"
 #      - "traefik.enable=true"
 #      - "traefik.http.routers.countly_frontend.rule=Host(`${ANALYTIC_HOSTNAME}`)"
 #      - "traefik.http.routers.countly_frontend.entrypoints=web"
