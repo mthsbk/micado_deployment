@@ -238,7 +238,7 @@ services:
       - "traefik.tcp.routers.api_gateway.service=api_gateway_service"
       - "traefik.tcp.services.api_gateway_service.loadbalancer.server.port=9443"
 #      - traefik.http.services.api_gateway.loadbalancer.server.port=9443
-      - traefik.http.routers.api_gateway_api.entrypoints=web-secure
+      - traefik.http.routers.api_gateway.entrypoints=web-secure
       - "traefik.tcp.routers.api_gateway_api.rule=HostSNI(`${API_HOSTNAME}`)"
       - "traefik.tcp.routers.api_gateway_api.tls.passthrough=true"
       - "traefik.tcp.routers.api_gateway_api.service=api_gateway_api_service"
