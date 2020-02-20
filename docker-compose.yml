@@ -258,7 +258,9 @@ services:
 #      - data_api
     networks:
       - micado_net
-
+          aliases:
+           - ${GATEWAY_HOSTNAME}
+           - ${API_HOSTNAME}
 # IDENTITY
   identity_server:
     image: wso2/wso2is-km:5.9.0

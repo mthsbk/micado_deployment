@@ -59,7 +59,7 @@ password =  "wso2carbon"
 alias =  "wso2carbon"
 key_password =  "wso2carbon"
 
-[apim.gateway.environment]
+[[apim.gateway.environment]]
 name = "Production and Sandbox"
 type = "hybrid"
 display_in_api_console = true
