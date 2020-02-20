@@ -257,10 +257,10 @@ services:
 #      - data_virtualization
 #      - data_api
     networks:
-      - micado_net
-          aliases:
-           - api.micadoproject.eu
-           - gateway.micadoproject.eu
+      micado_net:
+        aliases:
+         - api.micadoproject.eu
+         - gateway.micadoproject.eu
 # IDENTITY
   identity_server:
     image: wso2/wso2is-km:5.9.0
