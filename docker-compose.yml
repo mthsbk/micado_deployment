@@ -219,6 +219,7 @@ services:
       JAVA_OPTS: "-Dserver.hostname=\"0.0.0.0\" -Djava.rmi.server.hostname=\"192.168.4.26\" -Dorg.wso2.ignoreHostnameVerification=true -Dhttpclient.hostnameVerifier=AllowAll"
       WSO2_API_ADMIN_PWD: ${WSO2_API_ADMIN_PWD}
       GATEWAY_HOSTNAME: ${GATEWAY_HOSTNAME}
+      API_HOSTNAME: ${API_HOSTNAME}
     volumes:
 #      - ./api_manager/deployment.toml:/home/wso2carbon/wso2am-3.0.0/repository/conf/deployment.toml
       - ./api_manager:/home/wso2carbon/wso2-config-volume
@@ -237,7 +238,13 @@ services:
       - "traefik.tcp.routers.api_gateway.service=api_gateway_service"
       - "traefik.tcp.services.api_gateway_service.loadbalancer.server.port=9443"
 #      - traefik.http.services.api_gateway.loadbalancer.server.port=9443
-      - traefik.http.routers.api_gateway.entrypoints=web-secure
+      - traefik.http.routers.api_gateway_api.entrypoints=web-secure
+      - "traefik.tcp.routers.api_gateway_api.rule=HostSNI(`${API_HOSTNAME}`)"
+      - "traefik.tcp.routers.api_gateway_api.tls.passthrough=true"
+      - "traefik.tcp.routers.api_gateway_api.service=api_gateway_api_service"
+      - "traefik.tcp.services.api_gateway_api_service.loadbalancer.server.port=8243"
+#      - traefik.http.services.api_gateway.loadbalancer.server.port=9443
+      - traefik.http.routers.api_gateway_api.entrypoints=web-secure
 #      - "traefik.two.frontend.rule=Host:apis.micado_dev.eu:"
 #      - "traefik.two.port=8243"
 #      - "traefik.two.docker.network=micado_net"
