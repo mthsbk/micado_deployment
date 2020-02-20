@@ -1,5 +1,5 @@
 [server]
-hostname = "api.micadoproject.eu"
+hostname = "$env{GATEWAY_HOSTNAME}"
 node_ip = "0.0.0.0"
 #offset=0
 mode = "single" #single or ha
@@ -9,7 +9,7 @@ server_role = "default"
 
 [super_admin]
 username = "admin"
-password = "admin"
+password = "$env{WSO2_API_ADMIN_PWD}"
 create_admin_account = true
 
 [user_store]
@@ -76,6 +76,7 @@ https_endpoint = "https://localhost:${https.nio.port}"
 
 [transport.http.properties]
 server="MICADO API gateway"
+proxyPort = 443
 
 #[apim.cache.gateway_token]
 #enable = true
