@@ -193,6 +193,8 @@ services:
       PGRST_DB_ANON_ROLE: micado #In production this role should not be the same as the one used for the connection
     depends_on:
       - micado_db
+    ports:
+      - "3000:3000"
     labels:
       - "com.centurylinklabs.watchtower.enable=false"
     networks:
