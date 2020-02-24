@@ -46,4 +46,3 @@
   storage = "acme.json"
 
   [certificatesResolvers.myresolver.acme.tlsChallenge]
-    entryPoint = "web"
