@@ -26,3 +26,20 @@
 #    statusCodes = ["400-499"]
 #    retryAttempts = true
 #    minDuration = 42
+
+
+[certificatesResolvers.myresolver.acme]
+
+  # Email address used for registration.
+  #
+  # Required
+  #
+  email = "development@micadoproject.eu"
+
+  # File or key used for certificates storage.
+  #
+  # Required
+  #
+  storage = "acme.json"
+
+  [certificatesResolvers.myresolver.acme.tlsChallenge]
