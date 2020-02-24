@@ -36,8 +36,8 @@ services:
       - "443:443" # The HTTPS port
     volumes:
       - ./traefik/traefik.toml:/etc/traefik/traefik.toml
-      - ./traefik/dynamic.toml:/etc/traefik/dynamic.toml
-      - ./traefik/certs:/etc/certs # SSL Development certificates
+#      - ./traefik/dynamic.toml:/etc/traefik/dynamic.toml
+#      - ./traefik/certs:/etc/certs # SSL Development certificates
       - "/var/run/docker.sock:/var/run/docker.sock:ro"
       - $PWD/fail2ban_logs:/var/log
     networks:
