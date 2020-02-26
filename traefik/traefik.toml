@@ -30,6 +30,8 @@
 #    retryAttempts = true
 #    minDuration = 42
 
+[serversTransport]
+  insecureSkipVerify = true
 
 [certificatesResolvers.myresolver.acme]
 
