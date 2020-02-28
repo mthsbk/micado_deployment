@@ -358,8 +358,8 @@ services:
 #      MAPBOX_API_KEY: ${MAPBOX_API_KEY}
       MAPBOX_API_KEY: pk.eyJ1IjoiZ2lvcHBvbHVjYSIsImEiOiJjajhvd2d0bHIwODNsMnBwY3cwcjk2ZmU1In0.z4104Ptx7zgjW4yOjh7Wlg
       MB_DB_FILE: /metabase-data/metabase.db
-    ports:
-      - "3000:3000"
+#    ports:
+#      - "3000:3000"
     volumes:
       - type: volume
         source: metabase_data
