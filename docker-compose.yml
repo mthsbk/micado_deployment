@@ -295,10 +295,10 @@ services:
 # IDENTITY
   identity_server:
     image: wso2/wso2is-km:5.9.0
-    hostname: identity.micado.csi.it
+    hostname: identity.micadoproject.eu
     ports:
       - "9763:9763"
-      - "9443:9443"
+#      - "9443:9443"
     healthcheck:
       test: ["CMD", "curl", "-k", "-f", "https://localhost:9443/carbon/admin/login.jsp"]
       interval: 5s
