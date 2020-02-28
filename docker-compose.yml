@@ -297,7 +297,7 @@ services:
 # IDENTITY
   identity_server:
     image: wso2/wso2is-km:5.9.0
-    hostname: identity.micadoproject.eu
+#    hostname: identity.micadoproject.eu
     ports:
       - "9763:9763"
 #      - "9443:9443"
