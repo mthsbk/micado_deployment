@@ -319,7 +319,7 @@ services:
       - "traefik.http.routers.identity_server.middlewares=redirect"
       - "traefik.http.routers.identity_server.service=identity_server_service"
       - "traefik.http.services.identity_server_service.loadbalancer.server.port=9443"
-      - "traefik.http.middlewares.redirect.redirectscheme.scheme=https"
+#      - "traefik.http.middlewares.redirect.redirectscheme.scheme=https"
       - "traefik.http.routers.identity_server_https.rule=Host(`${IDENTITY_HOSTNAME}`)"
       - "traefik.http.routers.identity_server_https.entrypoints=web-secure"
       - "traefik.http.routers.identity_server_https.tls=true"
