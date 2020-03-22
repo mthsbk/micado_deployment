@@ -1,4 +1,4 @@
-\connect wso2_identity wso2_identity
+-- \connect wso2_identity wso2_identity
 
 --
 -- BPEL Related SQL Scripts

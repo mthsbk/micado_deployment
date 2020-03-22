@@ -1,4 +1,4 @@
-\connect wso2_identity wso2_identity
+--\connect wso2_api wso2_api
 
 -- 
 -- Copyright 2015 WSO2 Inc. (http://wso2.org)

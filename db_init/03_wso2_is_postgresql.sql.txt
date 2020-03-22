@@ -1,6 +1,6 @@
 
 --Begin Connect--
-\connect wso2_identity wso2_identity
+\conninfo
 
 begin;
 

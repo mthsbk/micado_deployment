@@ -17,9 +17,9 @@ type = "database"
 
 [database.shared_db]
 type = "postgre"
-url = "jdbc:postgresql://micado_db:5432/wso2_api"
-username = "wso2_api"
-password = "wso2_api"
+url = "jdbc:postgresql://micado_db:5432/$env{POSTGRES_DB}"
+username = "$env{WSO2_API_USER}"
+password = "$env{WSO2_API_PWD}"
 driver = "org.postgresql.Driver"
 validationQuery = "SELECT 1"
 pool_options.maxActive = 100
@@ -32,9 +32,9 @@ server="MICADO API gateway"
 
 [database.apim_db]
 type = "postgre"
-url = "jdbc:postgresql://micado_db:5432/wso2_api"
-username = "wso2_api"
-password = "wso2_api"
+url = "jdbc:postgresql://micado_db:5432/$env{POSTGRES_DB}"
+username = "$env{WSO2_API_USER}"
+password = "$env{WSO2_API_PWD}"
 driver = "org.postgresql.Driver"
 validationQuery = "SELECT 1"
 pool_options.maxActive = 50

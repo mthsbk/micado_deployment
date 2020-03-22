@@ -135,10 +135,8 @@ services:
 
   micado_db:
     image: mdillon/postgis:11-alpine
-    environment:
-      POSTGRES_PASSWORD: ${PA_HOSTNAME}
-      POSTGRES_USER: ${POSTGRES_USER}
-      POSTGRES_DB: ${POSTGRES_DB}
+    env_file:
+      - ./.env
     volumes:
       - type: volume
         source: postgres_data
@@ -186,6 +184,9 @@ services:
       WSO2_API_ADMIN_PWD: ${WSO2_API_ADMIN_PWD}
       GATEWAY_HOSTNAME: ${GATEWAY_HOSTNAME}
       API_HOSTNAME: ${API_HOSTNAME}
+      WSO2_API_USER: ${WSO2_API_USER}
+      WSO2_API_PWD: ${WSO2_API_PWD}
+      POSTGRES_DB: ${POSTGRES_DB}
     volumes:
 #      - ./api_manager/deployment.toml:/home/wso2carbon/wso2am-3.0.0/repository/conf/deployment.toml
       - ./api_manager:/home/wso2carbon/wso2-config-volume
@@ -453,8 +454,23 @@ services:
     image: weblate/weblate
     volumes:
       - weblate_data:/app/data
-    env_file:
-      - ./.env
+    environment:
+      WEBLATE_EMAIL_HOST: ${WEBLATE_EMAIL_HOST}
+      WEBLATE_EMAIL_HOST_USER: ${WEBLATE_EMAIL_HOST_USER}
+      WEBLATE_EMAIL_HOST_PASSWORD: ${WEBLATE_EMAIL_HOST_PASSWORD}
+      WEBLATE_SERVER_EMAIL: ${WEBLATE_SERVER_EMAIL}
+      WEBLATE_DEFAULT_FROM_EMAIL: ${WEBLATE_DEFAULT_FROM_EMAIL}
+      WEBLATE_ALLOWED_HOSTS: ${WEBLATE_ALLOWED_HOSTS}
+      WEBLATE_ADMIN_PASSWORD: ${WEBLATE_ADMIN_PASSWORD}
+      WEBLATE_ADMIN_NAME: ${WEBLATE_ADMIN_NAME}
+      WEBLATE_SITE_TITLE: ${WEBLATE_SITE_TITLE}
+      WEBLATE_SERVER_EMAIL: ${WEBLATE_SERVER_EMAIL}
+      WEBLATE_REGISTRATION_OPEN: ${WEBLATE_REGISTRATION_OPEN}
+      POSTGRES_PASSWORD: ${WEBLATE_POSTGRES_PASSWORD}
+      POSTGRES_USER: ${WEBLATE_POSTGRES_USER}
+      POSTGRES_DATABASE: ${POSTGRES_DB}
+      POSTGRES_HOST: ${WEBLATE_POSTGRES_HOST}
+      POSTGRES_PORT: ${POSTGRES_PORT}
     networks:
       - micado_net
 

@@ -1,4 +1,4 @@
-\connect wso2_api wso2_api
+--\connect wso2_api wso2_api
 
 DROP TABLE IF EXISTS REG_CLUSTER_LOCK;
 CREATE TABLE REG_CLUSTER_LOCK (
