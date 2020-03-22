@@ -14,15 +14,8 @@ services:
       - ./fail2ban_logs:/var/log:ro
       - fail2ban_data:/data
 
-
   balancer:
     image: traefik:v2.1.4
-#    command:
-      #- "--log.level=DEBUG"
-#      - "--api.insecure=true"
-#      - "--providers.docker=true"
-#      - "--providers.docker.exposedbydefault=false"
-#      - "--entrypoints.web.address=:80"
     environment:
       TZ: Europe/Rome
     labels:
@@ -32,7 +25,6 @@ services:
         published: 80
         protocol: tcp
         mode: host
-      - "8080:8080"
       - "443:443" # The HTTPS port
     volumes:
       - ./traefik/traefik.toml:/etc/traefik/traefik.toml
@@ -124,37 +116,6 @@ services:
     networks:
       - micado_net
 
-
-#  migrants_app:
-#    image: httpd:2.4
-#    labels:
-#      - "traefik.enable=true"
-#      - "traefik.http.routers.migrants_app.rule=Host(`${MIGRANTS_HOSTNAME}`)"
-#      - "traefik.http.routers.migrants_app.entrypoints=web"
-#    volumes:
-#      - type: volume
-#        source: migrants_app
-#        target: /usr/local/apache2/htdocs
-#    networks:
-#      - micado_net
- #   depends_on:
- #     - api_gateway
-
-  pa_app:
-    image: httpd:2.4
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.pa_app.rule=Host(`${PA_HOSTNAME}`)"
-      - "traefik.http.routers.pa_app.entrypoints=web"
-    volumes:
-      - type: volume
-        source: pa_app
-        target: /usr/local/apache2/htdocs
-    networks:
-      - micado_net
-#    depends_on:
-#      - api_gateway
-
   ngo_app:
     image: httpd:2.4
     labels:
@@ -175,9 +136,9 @@ services:
   micado_db:
     image: mdillon/postgis:11-alpine
     environment:
-      POSTGRES_PASSWORD: micado
-      POSTGRES_USER: micado
-      POSTGRES_DB: micado
+      POSTGRES_PASSWORD: ${PA_HOSTNAME}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_DB: ${POSTGRES_DB}
     volumes:
       - type: volume
         source: postgres_data
@@ -198,8 +159,6 @@ services:
       PGRST_DB_ANON_ROLE: micado #In production this role should not be the same as the one used for the connection
     depends_on:
       - micado_db
-    ports:
-      - "3000:3000"
     labels:
       - "com.centurylinklabs.watchtower.enable=false"
     networks:
@@ -231,10 +190,6 @@ services:
 #      - ./api_manager/deployment.toml:/home/wso2carbon/wso2am-3.0.0/repository/conf/deployment.toml
       - ./api_manager:/home/wso2carbon/wso2-config-volume
       - ./pg_lib/postgresql-42.2.9.jar:/home/wso2carbon/wso2am-3.0.0/repository/components/lib/postgresql-42.2.9.jar
-    ports:
-      - "8280:8280"
-      - "8243:8243"
-      - "9443:9443"
     labels:
       - "com.centurylinklabs.watchtower.enable=false"
       - "traefik.enable=true"
@@ -297,10 +252,6 @@ services:
 # IDENTITY
   identity_server:
     image: wso2/wso2is:5.9.0
-#    hostname: identity.micadoproject.eu
-    ports:
-      - "9763:9763"
-#      - "9443:9443"
     healthcheck:
       test: ["CMD", "curl", "-k", "-f", "https://localhost:9443/carbon/admin/login.jsp"]
       interval: 5s
@@ -341,9 +292,6 @@ services:
     labels:
       - "com.centurylinklabs.watchtower.enable=false"
       - "traefik.enable=true"
-#      - "traefik.http.routers.dashboard.rule=Host(`${DASHBOARD_HOSTNAME}`)"
-#      - "traefik.http.services.dashboard.loadbalancer.server.port=3000"
-#      - "traefik.http.routers.dashboard.entrypoints=web"
       - "traefik.http.routers.dashboard.rule=Host(`${DASHBOARD_HOSTNAME}`)"
       - "traefik.http.routers.dashboard.entrypoints=web"
       - "traefik.http.routers.dashboard.service=dashboard"
@@ -362,8 +310,6 @@ services:
 #      MAPBOX_API_KEY: ${MAPBOX_API_KEY}
       MAPBOX_API_KEY: pk.eyJ1IjoiZ2lvcHBvbHVjYSIsImEiOiJjajhvd2d0bHIwODNsMnBwY3cwcjk2ZmU1In0.z4104Ptx7zgjW4yOjh7Wlg
       MB_DB_FILE: /metabase-data/metabase.db
-#    ports:
-#      - "3000:3000"
     volumes:
       - type: volume
         source: metabase_data
@@ -406,8 +352,6 @@ services:
 
   chatbot:
     image: rasa/rasa:latest-full
-    ports:
-      - 5005:5005
     volumes:
       - /home/gioppo/Development/dockerfiles/micado_new/rasa:/app
     command:
@@ -443,8 +387,6 @@ services:
   mongo-express:
     image: mongo-express
 #    restart: always
-    ports:
-      - 8081:8081
     environment:
 #      ME_CONFIG_MONGODB_ADMINUSERNAME: countly
 #      ME_CONFIG_MONGODB_ADMINPASSWORD: countly
@@ -467,25 +409,8 @@ services:
 #      - COUNTLY_CONFIG_FRONTEND_MONGODB_USERNAME=countly
 #      - COUNTLY_CONFIG_FRONTEND_MONGODB_PASSWORD=countly
       - COUNTLY_CONFIG_FRONTEND_MONGODB_DB=countly
-#    deploy:
-#      restart_policy:
-#        condition: on-failure
-#        delay: 5s
-#        max_attempts: 3
-#        window: 120s
-    ports:
-      - "3001:3001"
     labels:
       - "com.centurylinklabs.watchtower.enable=false"
-#      - "traefik.enable=true"
-#      - "traefik.http.routers.countly_api.rule=Host(`${ANALYTIC_HOSTNAME}`) && PathPrefix(`/i`)"
-#      - "traefik.http.routers.countly_api.entrypoints=web"
-#      - "traefik.http.routers.countly_api.service=countly_api_service"
-#      - "traefik.http.services.countly_api_service.loadbalancer.server.port=3001"
-#      - "traefik.http.routers.countly_api2.rule=Host(`${ANALYTIC_HOSTNAME}`) && PathPrefix(`/o`)"
-#      - "traefik.http.routers.countly_api2.entrypoints=web"
-#      - "traefik.http.routers.countly_api2.service=countly_api_service2"
-#      - "traefik.http.services.countly_api_service2.loadbalancer.server.port=3001"
     networks:
       - micado_net
     depends_on:
@@ -506,15 +431,8 @@ services:
       - COUNTLY_CONFIG_FRONTEND_MONGODB_DB=countly
     networks:
       - micado_net
-    ports:
-      - "6001:6001"
     labels:
       - "com.centurylinklabs.watchtower.enable=false"
-#      - "traefik.enable=true"
-#      - "traefik.http.routers.countly_frontend.rule=Host(`${ANALYTIC_HOSTNAME}`)"
-#      - "traefik.http.routers.countly_frontend.entrypoints=web"
-#      - "traefik.http.routers.countly_frontend.service=countly_frontend_service"
-#      - "traefik.http.services.countly_frontend_service.loadbalancer.server.port=6001"
     depends_on:
       - mongodb
 #    deploy:
@@ -530,54 +448,31 @@ services:
 #        window: 120s
 
 
-  data_virtualization:
-    image: gioppoluca/teiid:12.1.0
-    hostname: teiid
-#    environment:
-#      JAVA_OPTS: "-Dfile.encoding=UTF-8"
-    ports:
-      - "8080:8080"
-      - "9990:9990"
-      - "31000:31000"
-      - "35432:35432"
+
+  weblate:
+    image: weblate/weblate
     volumes:
-      - ./teiid/deployments:/opt/jboss/wildfly/standalone/deployments
-      - ./teiid/configuration/standalone-teiid.xml:/opt/jboss/wildfly/standalone/configuration/standalone-teiid.xml
-      - ./teiid/modules/org/postgresql:/opt/jboss/wildfly/modules/system/layers/base/org/postgresql
-      - ./teiid/csv:/csv
-      - ./teiid/configuration/application-roles.properties:/opt/jboss/wildfly/standalone/configuration/application-roles.properties
-      - ./teiid/configuration/application-users.properties:/opt/jboss/wildfly/standalone/configuration/application-users.properties
-    labels:
-      - "com.centurylinklabs.watchtower.enable=false"
+      - weblate_data:/app/data
+    env_file:
+      - ./.env
     networks:
       - micado_net
 
-
-  swagger:
-    image: swaggerapi/swagger-ui
-    ports:
-      - "8081:8080"
-    expose:
-      - "8080"
-    environment:
-      API_URL: http://postgrest:3000/
-    depends_on:
-      - data_api
-
-  node:
-    image: node:10.16.0
-    ports:
-      - "8081:8081"
+  cache:
+    image: redis:4-alpine
+    restart: always
+    command: ["redis-server", "--appendonly", "yes"]
     volumes:
-      - ./nodejs:/home/node/app
+      - redis_data:/data
     networks:
       - micado_net
-    working_dir: /home/node/app
-    user: "node"
-    labels:
-      - "com.centurylinklabs.watchtower.enable=false"
-    command: "nodejs ./httprequestdump.js"
 
+  git:
+    image: gitea/gitea:latest
+    networks:
+      - micado_net
+    volumes:
+      - git_data:/data
 
 # Environment Management
 
@@ -662,6 +557,23 @@ volumes:
       type: none
       device: $PWD/mongo_data
       o: bind
+  weblate_data:
+    driver: local
+    driver_opts:
+      type: none
+      device: $PWD/weblate_data
+      o: bind
+    driver: local
+  redis_data:
+    driver_opts:
+      type: none
+      device: $PWD/redis_data
+      o: bind
+  git_data:
+    driver_opts:
+      type: none
+      device: $PWD/gis_data
+      o: bind
 
 networks:
   micado_net:
@@ -669,4 +581,4 @@ networks:
     ipam:
       driver: default
       config:
-      - subnet:  172.24.0.0/16
+      - subnet:  172.124.0.0/16

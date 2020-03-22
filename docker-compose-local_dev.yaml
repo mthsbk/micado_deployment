@@ -1,0 +1,62 @@
+version: '3.7'
+services:
+  balancer:
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./traefik/dynamic.toml:/etc/traefik/dynamic.toml
+      - ./traefik/certs:/etc/certs # SSL Development certificates
+
+  micado_db:
+    ports:
+      - "5432:5432"
+
+  data_api:
+    ports:
+      - "3000:3000"
+
+  db_admin:
+    ports:
+      - "82:80"
+
+  api_gateway:
+    ports:
+      - "8280:8280"
+      - "8243:8243"
+      - "9443:9443"
+
+  identity_server:
+    ports:
+      - "9763:9763"
+      - "9443:9443"
+
+  dashboard:
+    ports:
+      - "3000:3000"
+
+  countly_frontend:
+    ports:
+      - "6001:6001"
+
+  countly_api:
+    ports:
+      - "3001:3001"
+
+  mongo-express:
+    ports:
+      - 8081:8081
+
+  chatbot:
+    ports:
+      - 5005:5005
+
+
+
+  weblate:
+    ports:
+      - 81:8080
+
+  git:
+    ports:
+      - "3000:3000"
+      - "222:22"
