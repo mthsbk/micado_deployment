@@ -28,7 +28,7 @@ services:
   identity_server:
     ports:
       - "9763:9763"
-      - "9443:9443"
+      - "9444:9443"
 
   dashboard:
     ports:
