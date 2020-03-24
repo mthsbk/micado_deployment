@@ -17,11 +17,23 @@ To have a correct working instance you have to properly configure hostnames.  Gi
 5. dashboard.<MY_DOMAIN> (this hostname is needed for the dashboarding backend application)
 6. upload.<MY_DOMAIN> (this hostname is needed for the upload service)
 
+### Development execution
+In development to execute all services run
 
 ``
-docker-compose up
+./start_env.sh
+``
+In any case it is rare that in development the developer will need all the services running so it is better to start only the ones that are needed with a command like the one below
+
+``
+docker-compose -f docker-compose.yml -f docker-compose-local_dev.yaml up -d micado_db
 ``
 
+
+### Production execution
+``
+./start_env_prod.sh
+``
 
 ### Funded by
 
