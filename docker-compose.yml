@@ -36,7 +36,7 @@ services:
       - micado_net
 
   nginx:
-    image: nginx
+    image: nginx:1.17.9
     volumes:
       - $PWD/nginx/nginx.conf:/etc/nginx/nginx.conf
       - type: volume
@@ -472,7 +472,7 @@ services:
 
 
   weblate:
-    image: weblate/weblate
+    image: weblate/weblate:3.11.3
     volumes:
       - weblate_data:/app/data
     environment:
@@ -494,7 +494,20 @@ services:
       POSTGRES_HOST: ${WEBLATE_POSTGRES_HOST}
       POSTGRES_PORT: ${POSTGRES_PORT}
     labels:
+      - "traefik.enable=true"
       - "com.centurylinklabs.watchtower.enable=false"
+      - "traefik.http.routers.weblate.rule=Host(`${TRANSLATION_HOSTNAME}`)"
+      - "traefik.http.routers.weblate.entrypoints=web"
+#      - "traefik.http.routers.weblate.service=weblate"
+      - "traefik.http.routers.weblate.middlewares=redirect"
+      - "traefik.http.middlewares.redirect.redirectscheme.scheme=https"
+#      - "traefik.http.services.weblate.loadbalancer.server.port=8080"
+      - "traefik.http.routers.weblate2.rule=Host(`${TRANSLATION_HOSTNAME}`)"
+      - "traefik.http.routers.weblate2.entrypoints=web-secure"
+      - "traefik.http.routers.weblate2.tls=true"
+      - "traefik.http.routers.weblate2.tls.certresolver=myresolver"
+      - "traefik.http.routers.weblate2.service=weblate2"
+      - "traefik.http.services.weblate2.loadbalancer.server.port=8080"
     networks:
       - micado_net
 
@@ -510,7 +523,7 @@ services:
       - micado_net
 
   git:
-    image: gitea/gitea:latest
+    image: gitea/gitea:1.11.3
     networks:
       - micado_net
     environment:
@@ -519,7 +532,7 @@ services:
 #      DB_NAME: ${POSTGRES_DB}
 #      DB_USER: ${GITEA_DB_USER}
 #      DB_PASSWD: ${GITEA_DB_PWD}
-      DISABLE_REGISTRATION: true
+      DISABLE_REGISTRATION: "true"
     labels:
       - "com.centurylinklabs.watchtower.enable=false"
     volumes:
