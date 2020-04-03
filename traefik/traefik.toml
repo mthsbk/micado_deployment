@@ -31,7 +31,7 @@
 
 [accessLog]
   filePath = "/var/log/access.log"
-#  format = "foobar"
+  format = "json"
 #  bufferingSize = 42
 #  [accessLog.filters]
 #    statusCodes = ["400-499"]

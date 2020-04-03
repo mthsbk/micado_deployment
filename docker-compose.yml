@@ -20,7 +20,7 @@ services:
       TZ: Europe/Rome
     labels:
       - "com.centurylinklabs.watchtower.enable=false"
-      - "gioppo.recreate=2"
+      - "gioppo.recreate=1"
     ports:
       - target: 80
         published: 80
