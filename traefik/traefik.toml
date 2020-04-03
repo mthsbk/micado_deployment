@@ -29,8 +29,10 @@
 #    statusCodes = ["400-499"]
 #    retryAttempts = true
 #    minDuration = 42
-  [accessLog.fields.headers]
+  [accessLog.fields]
     defaultMode = "keep"
+    [accessLog.fields.headers]
+      defaultMode = "keep"
 
 [serversTransport]
   insecureSkipVerify = true
