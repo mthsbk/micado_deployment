@@ -1,10 +1,18 @@
 [entryPoints]
   [entryPoints.web]
     address = ":80"
-    [entryPoints.http.forwardedHeaders]
+    [entryPoints.web.forwardedHeaders]
       trustedIPs = ["0.0.0.0/0"]
+      insecure = true
+    [entryPoints.web.proxyProtocol]
+      insecure = true
   [entryPoints.web-secure]
     address = ":443"
+    [entryPoints.web-secure.forwardedHeaders]
+      trustedIPs = ["0.0.0.0/0"]
+      insecure = true
+    [entryPoints.web-secure.proxyProtocol]
+      insecure = true
 
 [api]
   insecure = true
