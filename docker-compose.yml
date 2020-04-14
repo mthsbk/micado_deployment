@@ -133,7 +133,7 @@ services:
     networks:
       - micado_net
 
-  ngo_app:
+  data_ngo:
     command: "sh -c 'rm -rf /var/www/html/* && ls -lat /var/www/html/ && cp -ra /var/www/html2/* /var/www/html/ && ls -lat /var/www/html/ && trap : TERM INT; (while true; do sleep 1000; done) & wait'"
     #TODO more elegant copy like copy with mv
     image: micadoproject/ngo_app_site # change tag and redeploy stack
@@ -581,18 +581,6 @@ volumes:
       type: none
       # device is the path in the host that has to be absolute
       device: $PWD/db_init
-      o: bind
-  pa_app:
-    driver: local
-    driver_opts:
-      type: none
-      device: /home/gioppo/Development/dockerfiles/micado_apps/pa/micado/dist/spa
-      o: bind
-  ong_app:
-    driver: local
-    driver_opts:
-      type: none
-      device: $PWD/sites/ong_app
       o: bind
   chatbot_data:
     driver: local
