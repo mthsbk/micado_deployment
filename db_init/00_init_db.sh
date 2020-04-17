@@ -7,19 +7,7 @@ export PGUSER="$POSTGRES_USER"
 
 env
 
-echo "\nCreating MICADO apps components\n"
-psql -c "CREATE USER $MICADO_DB_USER WITH ENCRYPTED PASSWORD '$MICADO_DB_PWD';"
-psql -c "CREATE SCHEMA $MICADO_DB_SCHEMA;"
-psql -c "GRANT CONNECT ON DATABASE $POSTGRES_DB TO $MICADO_DB_USER;"
-psql -c "GRANT USAGE ON SCHEMA $MICADO_DB_SCHEMA TO $MICADO_DB_USER;"
-psql -c "GRANT CREATE ON SCHEMA $MICADO_DB_SCHEMA TO $MICADO_DB_USER;"
-psql -c "ALTER ROLE $MICADO_DB_USER IN DATABASE $POSTGRES_DB SET search_path = $MICADO_DB_SCHEMA;"
-psql -c "ALTER DEFAULT PRIVILEGES IN SCHEMA $MICADO_DB_SCHEMA GRANT SELECT, INSERT, UPDATE, DELETE ON TABLES TO $MICADO_DB_USER;"
-psql -c "ALTER DEFAULT PRIVILEGES IN SCHEMA $MICADO_DB_SCHEMA GRANT USAGE ON SEQUENCES TO $MICADO_DB_USER;"
-
-echo "\nCreated MICADO apps components, now adding tables\n"
-
-psql -U $MICADO_DB_USER -d $POSTGRES_DB -a -q -f /docker-entrypoint-initdb.d/01_db.sql.txt
+# ----- NEED TO CREATE BEFORE API SCHEMA SINCE MICADO WILL DEPEND ON SOME TABLES AND THUS THOSE TABLES NEED TO BE THERE OR REFERENCE WILL NOT WORK
 
 # ---------- API MANAGER SHARED DB
 
@@ -36,6 +24,8 @@ psql -c "ALTER DEFAULT PRIVILEGES IN SCHEMA $WSO2_SHARED_SCHEMA GRANT USAGE ON S
 echo "\nCreated WSO2_SHARED components, now adding tables\n"
 
 psql -U $WSO2_SHARED_USER -d $POSTGRES_DB -a -q -f /docker-entrypoint-initdb.d/api_shared_postgresql.sql.txt
+
+# ---------- API MANAGER API DB
 
 echo "\nCreating WSO2_API components\n"
 psql -c "CREATE USER $WSO2_API_USER WITH ENCRYPTED PASSWORD '$WSO2_API_PWD';"
@@ -75,6 +65,27 @@ psql -U $WSO2_API_USER -d $POSTGRES_DB -a -q -f /docker-entrypoint-initdb.d/api_
 #psql -U $WSO2_IDENTITY_USER -d $POSTGRES_DB -a -q -f /docker-entrypoint-initdb.d/07_wso2_is_postgresql-tokencleanup-restore.sql.txt
 #psql -U $WSO2_IDENTITY_USER -d $POSTGRES_DB -a -q -f /docker-entrypoint-initdb.d/09_wso2_is_bpel_postgresql.sql.txt
 #psql -U $WSO2_IDENTITY_USER -d $POSTGRES_DB -a -q -f /docker-entrypoint-initdb.d/11_wso2_is_metric_postgresql.sql.txt
+
+
+echo "\nCreating MICADO apps components\n"
+psql -c "CREATE USER $MICADO_DB_USER WITH ENCRYPTED PASSWORD '$MICADO_DB_PWD';"
+psql -c "CREATE SCHEMA $MICADO_DB_SCHEMA;"
+psql -c "GRANT CONNECT ON DATABASE $POSTGRES_DB TO $MICADO_DB_USER;"
+psql -c "GRANT USAGE ON SCHEMA $MICADO_DB_SCHEMA TO $MICADO_DB_USER;"
+psql -c "GRANT CREATE ON SCHEMA $MICADO_DB_SCHEMA TO $MICADO_DB_USER;"
+psql -c "ALTER ROLE $MICADO_DB_USER IN DATABASE $POSTGRES_DB SET search_path = $MICADO_DB_SCHEMA;"
+psql -c "ALTER DEFAULT PRIVILEGES IN SCHEMA $MICADO_DB_SCHEMA GRANT SELECT, INSERT, UPDATE, DELETE ON TABLES TO $MICADO_DB_USER;"
+psql -c "ALTER DEFAULT PRIVILEGES IN SCHEMA $MICADO_DB_SCHEMA GRANT USAGE ON SEQUENCES TO $MICADO_DB_USER;"
+
+# NOW GRANTING USAGE TO SCHEMA AND SPECIFIC TABLES
+psql -c "GRANT USAGE ON SCHEMA $WSO2_SHARED_SCHEMA TO $MICADO_DB_USER;"
+psql -c "GRANT SELECT, REFERENCES ON $WSO2_SHARED_SCHEMA.um_tenant TO $MICADO_DB_USER;"
+psql -c "GRANT SELECT, REFERENCES ON $WSO2_SHARED_SCHEMA.um_user TO $MICADO_DB_USER;"
+
+echo "\nCreated MICADO apps components, now adding tables\n"
+
+#psql -U $MICADO_DB_USER -d $POSTGRES_DB -a -q -f /docker-entrypoint-initdb.d/01_db.sql.txt
+psql -U $MICADO_DB_USER -d $POSTGRES_DB -a -q -f /docker-entrypoint-initdb.d/Micado_DB_Schema.sql.txt
 
 
 
