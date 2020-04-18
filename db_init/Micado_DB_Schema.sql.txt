@@ -2227,11 +2227,6 @@ ALTER TABLE ONLY user_types
     ADD CONSTRAINT user_types_pkey PRIMARY KEY (id);
 
 
---
--- Name: INDEX_UM_TENANT_UM_DOMAIN_NAME; Type: INDEX; Schema: micadoapp; Owner: -
---
-
-CREATE INDEX "INDEX_UM_TENANT_UM_DOMAIN_NAME" ON "UM_TENANT" USING btree ("UM_DOMAIN_NAME");
 
 
 --
@@ -2309,32 +2304,16 @@ ALTER TABLE ONLY document_type_validator
 -- Name: document document_user_id_fkey; Type: FK CONSTRAINT; Schema: micadoapp; Owner: -
 --
 
-ALTER TABLE ONLY document
-    ADD CONSTRAINT document_user_id_fkey FOREIGN KEY (user_id) REFERENCES wso2_shared.um_user(um_id);
-
-
---
--- Name: document document_user_tenant_fkey; Type: FK CONSTRAINT; Schema: micadoapp; Owner: -
---
 
 ALTER TABLE ONLY document
-    ADD CONSTRAINT document_user_tenant_fkey FOREIGN KEY (user_tenant) REFERENCES wso2_shared.um_user(um_tenant_id);
-
+    ADD CONSTRAINT document_um_user_id_fkey FOREIGN KEY (user_id, user_tenant) REFERENCES wso2_shared.um_user(um_id, um_tenant_id);
 
 --
 -- Name: document document_validated_by_tenant_fkey; Type: FK CONSTRAINT; Schema: micadoapp; Owner: -
 --
 
 ALTER TABLE ONLY document
-    ADD CONSTRAINT document_validated_by_tenant_fkey FOREIGN KEY (validated_by_tenant) REFERENCES wso2_shared.um_user(um_tenant_id);
-
-
---
--- Name: document document_validated_by_user_fkey; Type: FK CONSTRAINT; Schema: micadoapp; Owner: -
---
-
-ALTER TABLE ONLY document
-    ADD CONSTRAINT document_validated_by_user_fkey FOREIGN KEY (validated_by_user) REFERENCES "UM_USER"("UM_ID");
+    ADD CONSTRAINT document_validated_um_user_id_fkey FOREIGN KEY (validated_by_user, validated_by_tenant) REFERENCES wso2_shared.um_user(um_id, um_tenant_id);
 
 
 --
@@ -2425,13 +2404,6 @@ ALTER TABLE ONLY glossary
     ADD CONSTRAINT glossary_lang_fkey FOREIGN KEY (lang) REFERENCES languages(lang) ON UPDATE CASCADE ON DELETE CASCADE;
 
 
---
--- Name: individual_intervention_plan_interventions individual_intervention_plan_intervention_validating_user_tenan; Type: FK CONSTRAINT; Schema: micadoapp; Owner: -
---
-
-ALTER TABLE ONLY individual_intervention_plan_interventions
-    ADD CONSTRAINT individual_intervention_plan_intervention_validating_user_tenan FOREIGN KEY (validating_user_tenant) REFERENCES wso2_shared.um_user(um_tenant_id);
-
 
 --
 -- Name: individual_intervention_plan_interventions individual_intervention_plan_interventions_intervention_type_fk; Type: FK CONSTRAINT; Schema: micadoapp; Owner: -
@@ -2449,28 +2421,13 @@ ALTER TABLE ONLY individual_intervention_plan_interventions
     ADD CONSTRAINT individual_intervention_plan_interventions_list_id_fkey FOREIGN KEY (list_id) REFERENCES individual_intervention_plan(id);
 
 
---
--- Name: individual_intervention_plan_interventions individual_intervention_plan_interventions_validating_user_id_f; Type: FK CONSTRAINT; Schema: micadoapp; Owner: -
---
-
 ALTER TABLE ONLY individual_intervention_plan_interventions
-    ADD CONSTRAINT individual_intervention_plan_interventions_validating_user_id_f FOREIGN KEY (validating_user_id) REFERENCES wso2_shared.um_user(um_id);
+    ADD CONSTRAINT individual_intervention_plan_interventions_um_user_id_fkey FOREIGN KEY (validating_user_id, validating_user_tenant) REFERENCES wso2_shared.um_user(um_id, um_tenant_id);
 
 
---
--- Name: individual_intervention_plan individual_intervention_plan_user_id_fkey; Type: FK CONSTRAINT; Schema: micadoapp; Owner: -
---
 
 ALTER TABLE ONLY individual_intervention_plan
-    ADD CONSTRAINT individual_intervention_plan_user_id_fkey FOREIGN KEY (user_id) REFERENCES wso2_shared.um_user(um_id);
-
-
---
--- Name: individual_intervention_plan individual_intervention_plan_user_tenant_fkey; Type: FK CONSTRAINT; Schema: micadoapp; Owner: -
---
-
-ALTER TABLE ONLY individual_intervention_plan
-    ADD CONSTRAINT individual_intervention_plan_user_tenant_fkey FOREIGN KEY (user_tenant) REFERENCES wso2_shared.um_user(um_tenant_id);
+    ADD CONSTRAINT individual_intervention_plan_um_user_id_fkey FOREIGN KEY (user_id, user_tenant) REFERENCES wso2_shared.um_user(um_id, um_tenant_id);
 
 
 --
@@ -2590,16 +2547,7 @@ ALTER TABLE ONLY process_users
 --
 
 ALTER TABLE ONLY ratings
-    ADD CONSTRAINT ratings_user_id_fkey FOREIGN KEY (user_id) REFERENCES wso2_shared.um_user(um_id);
-
-
---
--- Name: ratings ratings_user_tenant_fkey; Type: FK CONSTRAINT; Schema: micadoapp; Owner: -
---
-
-ALTER TABLE ONLY ratings
-    ADD CONSTRAINT ratings_user_tenant_fkey FOREIGN KEY (user_tenant) REFERENCES wso2_shared.um_user(um_tenant_id);
-
+    ADD CONSTRAINT ratings_um_user_id_fkey FOREIGN KEY (user_id, user_tenant) REFERENCES wso2_shared.um_user(um_id, um_tenant_id);
 
 --
 -- Name: step_document step_document_id_document_fkey; Type: FK CONSTRAINT; Schema: micadoapp; Owner: -
