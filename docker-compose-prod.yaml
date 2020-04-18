@@ -1,5 +1,8 @@
 version: '3.7'
 services:
+  balancer:
+    ports:
+      - "8080:8080"
 
 
 
