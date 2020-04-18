@@ -208,11 +208,10 @@ services:
 #      - ./api_manager/deployment.toml:/home/wso2carbon/wso2am-3.0.0/repository/conf/deployment.toml
       - ./api_manager:/home/wso2carbon/wso2-config-volume
       - ./pg_lib/postgresql-42.2.9.jar:/home/wso2carbon/wso2am-3.0.0/repository/components/lib/postgresql-42.2.9.jar
-      - ./api_manager_data/synapse-configs:/home/wso2carbon/wso2am-3.0.0/repository/deployment/server/synapse-configs
-      - ./api_manager_data/executionplans:/home/wso2carbon/wso2am-3.0.0/repository/deployment/server/executionplans
-      - ./api_manager_data/tenants:/home/wso2carbon/wso2am-3.0.0/repository/tenants
-      - ./api_manager_data/solr:/home/wso2carbon/wso2am-3.0.0/solr
-      - ./api_manager_data/database:/home/wso2carbon/wso2am-3.0.0/repository/database
+      - api_sinapse:/home/wso2carbon/wso2am-3.0.0/repository/deployment/server/synapse-configs
+      - api_executionplans:/home/wso2carbon/wso2am-3.0.0/repository/deployment/server/executionplans
+      - api_tenants:/home/wso2carbon/wso2am-3.0.0/repository/tenants
+      - api_database:/home/wso2carbon/wso2am-3.0.0/repository/database
     labels:
       - "com.centurylinklabs.watchtower.enable=false"
       - "traefik.enable=true"
@@ -319,7 +318,7 @@ services:
     volumes:
       - ./identity-server:/home/wso2carbon/wso2-config-volume
       - ./pg_lib/postgresql-42.2.9.jar:/home/wso2carbon/wso2is-km-5.9.0/repository/components/lib/postgresql-42.2.9.jar
-      - ./identity-server_data:/home/wso2carbon/wso2is-km-5.9.0/repository/deployment/server
+      - identity_server_vol:/home/wso2carbon/wso2is-km-5.9.0/repository/deployment/server
     depends_on:
       - micado_db
     networks:
@@ -647,6 +646,18 @@ volumes:
       type: none
       device: $PWD/git_data
       o: bind
+
+  api_sinapse:
+    driver: local
+  api_executionplans:
+    driver: local
+  api_tenants:
+    driver: local
+  api_database:
+    driver: local
+  identity_server_vol:
+    driver: local
+
 
 networks:
   micado_net:
