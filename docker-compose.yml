@@ -268,11 +268,11 @@ services:
 # IDENTITY
   identity_server:
     image: wso2/wso2is-km:5.9.0
-    healthcheck:
-      test: ["CMD", "curl", "-k", "-f", "https://localhost:9443/carbon/admin/login.jsp"]
-      interval: 5s
-      timeout: 120s
-      start_period: 100s
+#    healthcheck:
+#      test: ["CMD", "curl", "-k", "-f", "https://localhost:9443/carbon/admin/login.jsp"]
+#      interval: 5s
+#      timeout: 120s
+#      start_period: 100s
     environment:
 #      JAVA_OPTS: "-Dserver.hostname=\"0.0.0.0\" -Djava.rmi.server.hostname=\"192.168.4.26\" -Dorg.wso2.ignoreHostnameVerification=true -Dhttpclient.hostnameVerifier=AllowAll"
       WSO2_API_ADMIN_USER: ${WSO2_API_ADMIN_USER}
@@ -301,7 +301,7 @@ services:
       - "traefik.http.routers.identity_server.middlewares=redirect"
       - "traefik.http.routers.identity_server.service=identity_server_service"
       - "traefik.http.services.identity_server_service.loadbalancer.server.port=9443"
-#      - "traefik.http.middlewares.redirect.redirectscheme.scheme=https"
+      - "traefik.http.middlewares.redirect.redirectscheme.scheme=https"
       - "traefik.http.routers.identity_server_https.rule=Host(`${IDENTITY_HOSTNAME}`)"
       - "traefik.http.routers.identity_server_https.entrypoints=web-secure"
       - "traefik.http.routers.identity_server_https.tls=true"
@@ -316,7 +316,9 @@ services:
     depends_on:
       - micado_db
     networks:
-      - micado_net
+      micado_net:
+        aliases:
+         - identity.micadoproject.eu
 
 # DASHBOARD
   dashboard:
