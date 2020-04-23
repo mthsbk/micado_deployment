@@ -33,7 +33,7 @@ services:
 #      - ./traefik/certs:/etc/certs # SSL Development certificates
       - "/var/run/docker.sock:/var/run/docker.sock:ro"
       - $PWD/fail2ban_logs:/var/log
-      - ./traefik/traefik-acme:/etc/traefik/acme
+      - ./traefik/traefik-acme/acme.json:/acme.json
     networks:
       - micado_net
 
