@@ -148,7 +148,8 @@ services:
   micado_db:
     image: mdillon/postgis:11-alpine
     env_file:
-      - ./.env
+#      - .env
+      - prod.env
     volumes:
       - type: volume
         source: postgres_data
@@ -163,6 +164,8 @@ services:
 
   data_api:
     image: postgrest/postgrest:v6.0.2
+    env_file:
+      - prod.env
     environment:
       PGRST_DB_URI: postgres://${MICADO_DB_PWD}:${MICADO_DB_USER}@micado_db:5432/${POSTGRES_DB}
       PGRST_DB_SCHEMA: ${MICADO_DB_SCHEMA}
@@ -176,9 +179,11 @@ services:
 
   db_admin:
     image: dpage/pgadmin4:4.18
+    env_file:
+      - prod.env
     environment:
       PGADMIN_DEFAULT_EMAIL: micado@csi.it
-      PGADMIN_DEFAULT_PASSWORD: micadoadmin
+#      PGADMIN_DEFAULT_PASSWORD: micadoadmin
     labels:
       - traefik.enable=true
       - "traefik.http.routers.db_admin.rule=Host(`${DB_ADMIN_HOSTNAME}`)"
@@ -191,6 +196,8 @@ services:
 # API GATEWAY
   api_gateway:
     image: wso2/wso2am:3.0.0
+    env_file:
+      - prod.env
     environment:
       JAVA_OPTS: "-Dserver.hostname=\"0.0.0.0\" -Djava.rmi.server.hostname=\"192.168.4.26\" -Dorg.wso2.ignoreHostnameVerification=true -Dhttpclient.hostnameVerifier=AllowAll"
       WSO2_API_ADMIN_USER: ${WSO2_API_ADMIN_USER}
@@ -199,12 +206,12 @@ services:
       API_HOSTNAME: ${API_HOSTNAME}
       IDENTITY_HOSTNAME: ${IDENTITY_HOSTNAME}
       WSO2_API_USER: ${WSO2_API_USER}
-      WSO2_API_PWD: ${WSO2_API_PWD}
+#      WSO2_API_PWD: ${WSO2_API_PWD}
       POSTGRES_DB: ${POSTGRES_DB}
       WSO2_SHARED_USER: ${WSO2_SHARED_USER}
-      WSO2_SHARED_PWD: ${WSO2_SHARED_PWD}
+#      WSO2_SHARED_PWD: ${WSO2_SHARED_PWD}
       WSO2_IDENTITY_ADMIN_USER: ${WSO2_IDENTITY_ADMIN_USER}
-      WSO2_IDENTITY_ADMIN_PWD: ${WSO2_IDENTITY_ADMIN_PWD}
+#      WSO2_IDENTITY_ADMIN_PWD: ${WSO2_IDENTITY_ADMIN_PWD}
     volumes:
 #      - ./api_manager/deployment.toml:/home/wso2carbon/wso2am-3.0.0/repository/conf/deployment.toml
       - ./api_manager:/home/wso2carbon/wso2-config-volume
@@ -274,21 +281,27 @@ services:
 #      interval: 5s
 #      timeout: 120s
 #      start_period: 100s
+    env_file:
+      - prod.env
     environment:
-#      JAVA_OPTS: "-Dserver.hostname=\"0.0.0.0\" -Djava.rmi.server.hostname=\"192.168.4.26\" -Dorg.wso2.ignoreHostnameVerification=true -Dhttpclient.hostnameVerifier=AllowAll"
+      JAVA_OPTS: "-Dserver.hostname=\"0.0.0.0\" -Dorg.wso2.ignoreHostnameVerification=true -Dorg.opensaml.httpclient.https.disableHostnameVerification=true -Dhttpclient.hostnameVerifier=\"AllowAll\""
       WSO2_API_ADMIN_USER: ${WSO2_API_ADMIN_USER}
       WSO2_API_ADMIN_PWD: ${WSO2_API_ADMIN_PWD}
       GATEWAY_HOSTNAME: ${GATEWAY_HOSTNAME}
       API_HOSTNAME: ${API_HOSTNAME}
       IDENTITY_HOSTNAME: ${IDENTITY_HOSTNAME}
       WSO2_API_USER: ${WSO2_API_USER}
-      WSO2_API_PWD: ${WSO2_API_PWD}
+#      WSO2_API_PWD: ${WSO2_API_PWD}
       POSTGRES_DB: ${POSTGRES_DB}
       WSO2_SHARED_USER: ${WSO2_SHARED_USER}
-      WSO2_SHARED_PWD: ${WSO2_SHARED_PWD}
+#      WSO2_SHARED_PWD: ${WSO2_SHARED_PWD}
       WSO2_IDENTITY_ADMIN_USER: ${WSO2_IDENTITY_ADMIN_USER}
-      WSO2_IDENTITY_ADMIN_PWD: ${WSO2_IDENTITY_ADMIN_PWD}
+#      WSO2_IDENTITY_ADMIN_PWD: ${WSO2_IDENTITY_ADMIN_PWD}
       WSO2_API_SERVICE: ${WSO2_API_SERVICE}
+#    secrets:
+#      - WSO2_SHARED_PWD
+#      - WSO2_API_ADMIN_PWD
+#      - WSO2_IDENTITY_ADMIN_PWD
     labels:
       - "com.centurylinklabs.watchtower.enable=false"
       - "traefik.enable=true"
@@ -485,23 +498,25 @@ services:
 
 
   weblate:
-    image: weblate/weblate:3.11.3-1
+    image: weblate/weblate:4.0.2-1
     volumes:
       - weblate_data:/app/data
+    env_file:
+      - prod.env
     environment:
       WEBLATE_EMAIL_HOST: ${WEBLATE_EMAIL_HOST}
       WEBLATE_EMAIL_HOST_USER: ${WEBLATE_EMAIL_HOST_USER}
-      WEBLATE_EMAIL_HOST_PASSWORD: ${WEBLATE_EMAIL_HOST_PASSWORD}
+#      WEBLATE_EMAIL_HOST_PASSWORD: ${WEBLATE_EMAIL_HOST_PASSWORD}
       WEBLATE_SERVER_EMAIL: ${WEBLATE_SERVER_EMAIL}
       WEBLATE_DEFAULT_FROM_EMAIL: ${WEBLATE_DEFAULT_FROM_EMAIL}
       WEBLATE_ALLOWED_HOSTS: ${WEBLATE_ALLOWED_HOSTS}
-      WEBLATE_ADMIN_PASSWORD: ${WEBLATE_ADMIN_PASSWORD}
+#      WEBLATE_ADMIN_PASSWORD: ${WEBLATE_ADMIN_PASSWORD}
       WEBLATE_ADMIN_NAME: ${WEBLATE_ADMIN_NAME}
       WEBLATE_ADMIN_EMAIL: ${WEBLATE_ADMIN_EMAIL}
       WEBLATE_SITE_TITLE: ${WEBLATE_SITE_TITLE}
       WEBLATE_SERVER_EMAIL: ${WEBLATE_SERVER_EMAIL}
       WEBLATE_REGISTRATION_OPEN: ${WEBLATE_REGISTRATION_OPEN}
-      POSTGRES_PASSWORD: ${WEBLATE_POSTGRES_PASSWORD}
+#      POSTGRES_PASSWORD: ${WEBLATE_POSTGRES_PASSWORD}
       POSTGRES_USER: ${WEBLATE_POSTGRES_USER}
       POSTGRES_DATABASE: ${POSTGRES_DB}
       POSTGRES_HOST: ${WEBLATE_POSTGRES_HOST}
@@ -539,6 +554,8 @@ services:
     image: gitea/gitea:1.11.3
     networks:
       - micado_net
+    env_file:
+      - prod.env
     environment:
 #      DB_TYPE: postgres
 #      DB_HOST: micado_db:5432
@@ -654,6 +671,14 @@ volumes:
     driver: local
   identity_server_vol:
     driver: local
+
+#secrets:
+#  WSO2_API_ADMIN_PWD:
+#    file: ./secrets/wso2_api_admin_pwd.txt
+#  WSO2_IDENTITY_ADMIN_PWD:
+#    file: ./secrets/wso2_identity_admin_pwd.txt
+#  WSO2_SHARED_PWD:
+#    file: ./secrets/wso2_shared_pwd.txt
 
 
 networks:

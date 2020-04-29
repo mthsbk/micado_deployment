@@ -1,5 +1,5 @@
 [server]
-hostname = "0.0.0.0"
+hostname = "localhost"
 node_ip = "0.0.0.0"
 base_path = "https://$ref{server.hostname}:${carbon.management.port}"
 serverDetails = "WSO2 IS as KM 5.9.0"
@@ -83,7 +83,11 @@ enable = true
 enable = true
 
 [identity_mgt.user_self_registration]
-allow_self_registration = false
+allow_self_registration = true
+
+[identity_mgt.user_onboarding]
+enable_email_verification = false 
+lock_on_creation=false
 
 [default_cache_timeout]
 force_local_cache = true
@@ -98,6 +102,16 @@ type = "org.wso2.carbon.identity.core.handler.AbstractIdentityHandler"
 name = "org.wso2.carbon.identity.oauth2.token.handler.clientauth.mutualtls.MutualTLSClientAuthenticator"
 order = "158"
 enable = false
+
+[event.default_listener.identity_mgt]
+priority= "50"
+enable = false
+[event.default_listener.governance_identity_mgt]
+priority= "95"
+enable = true
+[event.default_listener.governance_identity_store]
+priority= "97"
+enable = true
 
 [oauth.extensions]
 token_generator = "org.wso2.carbon.apimgt.keymgt.issuers.APIMTokenIssuer"
@@ -131,3 +145,15 @@ enable = true
 #signing_algorithm = "SHA256withRSA"
 enable_user_claims = true
 claims_extractor_impl = "org.wso2.carbon.apimgt.impl.token.DefaultClaimsRetriever"
+
+[output_adapter.email]
+from_address= "development@micadoproject.eu"
+username= "$env{WEBLATE_ADMIN_EMAIL}"
+password= "$env{WEBLATE_EMAIL_HOST_PASSWORD}"
+hostname= "$env{WEBLATE_EMAIL_HOST}"
+port= 587
+enable_start_tls= true
+enable_authentication= true
+
+[admin_service.wsdl]
+enable = true
