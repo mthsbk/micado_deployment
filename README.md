@@ -32,7 +32,8 @@ docker-compose -f docker-compose.yml -f docker-compose-local_dev.yaml up -d mica
 
 ### Production execution
 Create a prod.env file with this content:
-``
+
+```
 WSO2_API_ADMIN_PWD=secretpassword1
 WSO2_IDENTITY_ADMIN_PWD=secretpassword2
 WSO2_IDENTITY_PWD=secretpassword3
@@ -53,7 +54,7 @@ WEBLATE_ADMIN_PASSWORD=secretpassword9
 WEBLATE_POSTGRES_PASSWORD=secretpassword10
 WEBLATE_EMAIL_HOST_PASSWORD=secretpassword11
 GITEA_DB_PWD=secretpassword12
-``
+```
 
 Than execute the following command:
 
