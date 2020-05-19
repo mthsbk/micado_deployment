@@ -335,6 +335,12 @@ services:
       micado_net:
         aliases:
          - identity.micadoproject.eu
+  backend:
+    image: micadoproject/backend
+#    ports:
+#      - "3001:3000"
+    networks:
+      - micado_net
 
 # DASHBOARD
   dashboard:
