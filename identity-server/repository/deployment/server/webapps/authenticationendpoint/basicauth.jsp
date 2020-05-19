@@ -291,7 +291,7 @@
         %>
     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 form-group">
         <div class="form-actions">
-            <%=AuthenticationEndpointUtil.i18n(resourceBundle, "no.account")%>
+            <%=AuthenticationEndpointUtil.i18n(resourceBundle, "no.account")%> basicauth
             <a id="registerLink" href="<%=getRegistrationUrl(identityMgtEndpointContext, urlEncodedURL)%>">
                 <%=AuthenticationEndpointUtil.i18n(resourceBundle, "register.now")%>
             </a>

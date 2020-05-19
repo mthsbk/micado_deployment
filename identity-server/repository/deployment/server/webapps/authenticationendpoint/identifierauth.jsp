@@ -125,7 +125,7 @@
     %>
     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 form-group">
         <div class="form-actions">
-            <%=AuthenticationEndpointUtil.i18n(resourceBundle, "forgot.username.password")%>
+            <%=AuthenticationEndpointUtil.i18n(resourceBundle, "forgot.username.password")%> identifierauth
             <a id="usernameRecoverLink"
                 href="<%=getRecoverAccountUrl(identityMgtEndpointContext, urlEncodedURL, true)%>">
                 <%=AuthenticationEndpointUtil.i18n(resourceBundle, "forgot.username")%>
