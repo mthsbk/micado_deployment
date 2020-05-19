@@ -56,9 +56,19 @@ pool_options.validationInterval = 10000
 #password = "wso2carbon"
 
 
+#[keystore.primary]
+#name = "wso2carbon.jks"
+#password = "wso2carbon"
+
 [keystore.primary]
-name = "wso2carbon.jks"
-password = "wso2carbon"
+file_name = "micadokeystore.jks"
+password = "micadostorepass"
+alias = "micadocert"
+key_password = "micadokeypass"
+
+[truststore]
+file_name = "micado-truststore.jks" 
+password = "wso2carbonmicado" 
 
 [identity]
 data_source = "jdbc/WSO2AM_DB"
