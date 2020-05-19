@@ -71,7 +71,7 @@ password = "wso2carbon"
 #password = "wso2carbonmicado" 
 
 [identity.auth_framework.endpoint] 
-tenant_list_enabled="false"
+#tenant_list_enabled="false"
 hostname_verification_enabled="false"
 
 [identity]
