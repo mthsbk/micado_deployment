@@ -70,10 +70,10 @@ prompt = true
 [transport.https.sslHostConfig.properties]
 certificateVerification = "want"
 
-[transport.http.properties]
-proxyPort = 80
-[transport.https.properties]
-proxyPort = 443
+#[transport.http.properties]
+#proxyPort = 80
+#[transport.https.properties]
+#proxyPort = 443
 
 [tasks]
 client_dispatch_address = "https://$ref{server.hostname}:9448"
