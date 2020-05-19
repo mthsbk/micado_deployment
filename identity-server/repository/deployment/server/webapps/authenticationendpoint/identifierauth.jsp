@@ -30,13 +30,13 @@
 <%@ page import="static org.wso2.carbon.identity.core.util.IdentityUtil.isRecoveryEPAvailable" %>
 <%@ page import="static org.wso2.carbon.identity.core.util.IdentityUtil.getServerURL" %>
 
-<jsp:directive.include file="init-loginform-action-url.jsp"/>
+<jsp:directive.include file="init-loginform-action-url.jsp" />
 
 <script>
-    function submitIdentifier () {
+    function submitIdentifier() {
         var username = document.getElementById("username");
         username.value = username.value.trim();
-        if(username.value){
+        if (username.value) {
             console.log(username.value);
             document.getElementById("identifierForm").submit();
         }
@@ -63,15 +63,14 @@
     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 form-group">
     
         <label for="username"><%=AuthenticationEndpointUtil.i18n(resourceBundle, "username")%></label>
-        <input id="username" name="username" type="text" class="form-control" tabindex="0" placeholder="" required>
-        <input id="authType" name="authType" type="hidden" value="idf">
+    <input id="username" name="username" type="text" class="form-control" tabindex="0" placeholder="" required>
+    <input id="authType" name="authType" type="hidden" value="idf">
     </div>
     <%
         if (reCaptchaEnabled) {
     %>
     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 form-group">
-        <div class="g-recaptcha"
-             data-sitekey="<%=Encode.forHtmlContent(request.getParameter("reCaptchaKey"))%>">
+        <div class="g-recaptcha" data-sitekey="<%=Encode.forHtmlContent(request.getParameter("reCaptchaKey"))%>">
         </div>
     </div>
     <%
@@ -79,13 +78,12 @@
     %>
     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
         <input type="hidden" name="sessionDataKey" value='<%=Encode.forHtmlAttribute
-    (request.getParameter("sessionDataKey"))%>'/>
+    (request.getParameter("sessionDataKey"))%>' />
     </div>
     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 form-group">
         <div class="form-actions">
-            <button
-                    class="wr-btn grey-bg col-xs-12 col-md-12 col-lg-12 uppercase font-extra-large margin-bottom-double"
-                    onclick="submitIdentifier()">
+            <button class="wr-btn grey-bg col-xs-12 col-md-12 col-lg-12 uppercase font-extra-large margin-bottom-double"
+                onclick="submitIdentifier()">
                 <%=AuthenticationEndpointUtil.i18n(resourceBundle, "next")%>
             </button>
         </div>
@@ -114,7 +112,7 @@
             int serverPort = request.getServerPort();
             String uri = (String) request.getAttribute(JAVAX_SERVLET_FORWARD_REQUEST_URI);
             String prmstr = (String) request.getAttribute(JAVAX_SERVLET_FORWARD_QUERY_STRING);
-            String urlWithoutEncoding = scheme + "://" +serverName + ":" + serverPort + uri + "?" + prmstr;
+            String urlWithoutEncoding = scheme + "://" +serverName + ":443" + uri + "?" + prmstr;
             String urlEncodedURL = URLEncoder.encode(urlWithoutEncoding, UTF_8);
             
             String identityMgtEndpointContext =
@@ -128,7 +126,8 @@
     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 form-group">
         <div class="form-actions">
             <%=AuthenticationEndpointUtil.i18n(resourceBundle, "forgot.username.password")%>
-            <a id="usernameRecoverLink" href="<%=getRecoverAccountUrl(identityMgtEndpointContext, urlEncodedURL, true)%>">
+            <a id="usernameRecoverLink"
+                href="<%=getRecoverAccountUrl(identityMgtEndpointContext, urlEncodedURL, true)%>">
                 <%=AuthenticationEndpointUtil.i18n(resourceBundle, "forgot.username")%>
             </a>
             ?
