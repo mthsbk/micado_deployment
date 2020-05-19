@@ -1,7 +1,8 @@
 [server]
 hostname = "$env{IDENTITY_HOSTNAME}"
 node_ip = "0.0.0.0"
-base_path = "https://$ref{server.hostname}:${carbon.management.port}"
+base_path = "https://$ref{server.hostname}"
+#base_path = "https://$ref{server.hostname}:${carbon.management.port}"
 serverDetails = "WSO2 IS as KM 5.9.0"
 mode = "single"
 userAgent = "WSO2 IS as KM 5.9.0"
@@ -132,7 +133,7 @@ traffic_manager_auth_urls=["ssl://$env{WSO2_API_SERVICE}:9711"]
 name = "Production and Sandbox"
 type = "hybrid"
 description = "This is a hybrid gateway that handles both production and sandbox token traffic."
-service_url = "https://$env{WSO2_API_SERVICE}:9443/services/"
+service_url = "https://$env{WSO2_API_SERVICE}:443/services/"
 username= "$env{WSO2_API_ADMIN_USER}"
 password= "$env{WSO2_API_ADMIN_PWD}"
 
