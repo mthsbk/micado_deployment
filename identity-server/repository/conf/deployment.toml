@@ -1,5 +1,5 @@
 [server]
-hostname = "localhost"
+hostname = "$env{IDENTITY_HOSTNAME}"
 node_ip = "0.0.0.0"
 base_path = "https://$ref{server.hostname}:${carbon.management.port}"
 serverDetails = "WSO2 IS as KM 5.9.0"
