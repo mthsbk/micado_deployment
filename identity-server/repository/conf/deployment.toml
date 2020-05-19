@@ -77,7 +77,7 @@ certificateVerification = "want"
 
 [tasks]
 client_dispatch_address = "https://$ref{server.hostname}:9448"
-server_address = "https://localhost:9443"
+server_address = "https://$ref{server.hostname}:9443"
 
 [oauth]
 prompt_consent = "$ref{authentication.consent.prompt}"
