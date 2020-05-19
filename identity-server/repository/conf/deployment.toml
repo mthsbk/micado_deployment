@@ -1,8 +1,8 @@
 [server]
 hostname = "$env{IDENTITY_HOSTNAME}"
 node_ip = "0.0.0.0"
-base_path = "https://$ref{server.hostname}"
-#base_path = "https://$ref{server.hostname}:${carbon.management.port}"
+#base_path = "https://$ref{server.hostname}"
+base_path = "https://$ref{server.hostname}:${carbon.management.port}"
 serverDetails = "WSO2 IS as KM 5.9.0"
 mode = "single"
 userAgent = "WSO2 IS as KM 5.9.0"
