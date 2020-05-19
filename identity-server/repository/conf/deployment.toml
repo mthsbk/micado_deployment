@@ -56,19 +56,23 @@ pool_options.validationInterval = 10000
 #password = "wso2carbon"
 
 
-#[keystore.primary]
-#name = "wso2carbon.jks"
-#password = "wso2carbon"
-
 [keystore.primary]
-file_name = "micadokeystore.jks"
-password = "micadostorepass"
-alias = "micadocert"
-key_password = "micadokeypass"
+name = "wso2carbon.jks"
+password = "wso2carbon"
 
-[truststore]
-file_name = "micado-truststore.jks" 
-password = "wso2carbonmicado" 
+#[keystore.primary]
+#file_name = "micadokeystore.jks"
+#password = "micadostorepass"
+#alias = "micadocert"
+#key_password = "micadokeypass"
+
+#[truststore]
+#file_name = "micado-truststore.jks" 
+#password = "wso2carbonmicado" 
+
+[identity.auth_framework.endpoint] 
+tenant_list_enabled="false"
+hostname_verification_enabled="false"
 
 [identity]
 data_source = "jdbc/WSO2AM_DB"
@@ -148,7 +152,7 @@ traffic_manager_auth_urls=["ssl://$env{WSO2_API_SERVICE}:9711"]
 name = "Production and Sandbox"
 type = "hybrid"
 description = "This is a hybrid gateway that handles both production and sandbox token traffic."
-service_url = "https://$env{WSO2_API_SERVICE}:443/services/"
+service_url = "https://$env{WSO2_API_SERVICE}/services/"
 username= "$env{WSO2_API_ADMIN_USER}"
 password= "$env{WSO2_API_ADMIN_PWD}"
 
