@@ -70,9 +70,9 @@ password = "wso2carbon"
 #file_name = "micado-truststore.jks" 
 #password = "wso2carbonmicado" 
 
-[identity.auth_framework.endpoint] 
+#[identity.auth_framework.endpoint] 
 #tenant_list_enabled="false"
-hostname_verification_enabled="false"
+#hostname_verification_enabled="false"
 
 [identity]
 data_source = "jdbc/WSO2AM_DB"
