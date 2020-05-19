@@ -249,7 +249,7 @@
                 int serverPort = request.getServerPort();
                 String uri = (String) request.getAttribute(JAVAX_SERVLET_FORWARD_REQUEST_URI);
                 String prmstr = URLDecoder.decode(((String) request.getAttribute(JAVAX_SERVLET_FORWARD_QUERY_STRING)), UTF_8);
-                String urlWithoutEncoding = scheme + "://" +serverName + ":443" + uri + "?" + prmstr;
+                String urlWithoutEncoding = scheme + "://" +serverName + ":" + serverPort + uri + "?" + prmstr;
                 String urlEncodedURL = URLEncoder.encode(urlWithoutEncoding, UTF_8);
 
                 String identityMgtEndpointContext =
@@ -291,7 +291,7 @@
         %>
     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 form-group">
         <div class="form-actions">
-            <%=AuthenticationEndpointUtil.i18n(resourceBundle, "no.account")%> basicauth
+            <%=AuthenticationEndpointUtil.i18n(resourceBundle, "no.account")%>
             <a id="registerLink" href="<%=getRegistrationUrl(identityMgtEndpointContext, urlEncodedURL)%>">
                 <%=AuthenticationEndpointUtil.i18n(resourceBundle, "register.now")%>
             </a>
