@@ -1,3 +1,8 @@
+[ENVI_VAR]
+env_api_hostname = "$env{API_HOSTNAME}"
+env_identity_hostname = "$env{IDENTITY_HOSTNAME}"
+
+
 [server]
 hostname = "$env{GATEWAY_HOSTNAME}"
 node_ip = "0.0.0.0"
@@ -70,8 +75,8 @@ username= "${admin.username}"
 password= "${admin.password}"
 ws_endpoint = "ws://localhost:9099"
 wss_endpoint = "wss://localhost:8099"
-http_endpoint = "http://$env{API_HOSTNAME}:443"
-https_endpoint = "https://$env{API_HOSTNAME}:443"
+http_endpoint = "http://{{ENVI_VAR.env_api_hostname}}"
+https_endpoint = "https://{{ENVI_VAR.env_api_hostname}}"
 
 
 [transport.http.properties]
@@ -126,7 +131,7 @@ proxyPort = 443
 #type = "failover"
 
 [apim.key_manager]
-service_url = "https://$env{IDENTITY_HOSTNAME}/services/"
+service_url = "https://{{ENVI_VAR.env_identity_hostname}}/services/"
 username = "$env{WSO2_IDENTITY_ADMIN_USER}"
 password = "$env{WSO2_IDENTITY_ADMIN_PWD}"
 #pool.init_idle_capacity = 50

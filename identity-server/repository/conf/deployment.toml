@@ -1,3 +1,7 @@
+[ENVI_VAR]
+env_api_hostname = "$env{API_HOSTNAME}"
+
+
 [server]
 hostname = "$env{IDENTITY_HOSTNAME}"
 node_ip = "0.0.0.0"
@@ -147,14 +151,14 @@ enable_decision_connection = false
 #receiver_auth_url = "ssl://localhost:9711"
 
 [[apim.throttling.url_group]]
-traffic_manager_urls=["tcp://$env{WSO2_API_SERVICE}:9611"]
-traffic_manager_auth_urls=["ssl://$env{WSO2_API_SERVICE}:9711"]
+traffic_manager_urls=["tcp://{{ENVI_VAR.env_api_hostname}}:9611"]
+traffic_manager_auth_urls=["ssl://{{ENVI_VAR.env_api_hostname}}:9711"]
 
 [[apim.gateway.environment]]
 name = "Production and Sandbox"
 type = "hybrid"
 description = "This is a hybrid gateway that handles both production and sandbox token traffic."
-service_url = "https://$env{WSO2_API_SERVICE}/services/"
+service_url = "https://{{ENVI_VAR.env_api_hostname}}/services/"
 username= "$env{WSO2_API_ADMIN_USER}"
 password= "$env{WSO2_API_ADMIN_PWD}"
 
@@ -179,3 +183,7 @@ enable_authentication= true
 
 [admin_service.wsdl]
 enable = true
+
+[output_adapter.email.custom_properties]
+"mail.smtp.proxy.host"="10.138.149.7"
+"mail.smtp.proxy.port"="3128"
