@@ -20,42 +20,42 @@ create_admin_account = true
 [user_store]
 type = "database"
 
-[database.shared_db]
-type = "postgre"
-url = "jdbc:postgresql://micado_db:5432/$env{POSTGRES_DB}"
-username = "$env{WSO2_SHARED_USER}"
-password = "$env{WSO2_SHARED_PWD}"
-driver = "org.postgresql.Driver"
-validationQuery = "SELECT 1"
-pool_options.maxActive = 100
-pool_options.maxWait = 10000
-pool_options.validationInterval = 10000
+#[database.shared_db]
+#type = "postgre"
+#url = "jdbc:postgresql://micado_db:5432/$env{POSTGRES_DB}"
+#username = "$env{WSO2_SHARED_USER}"
+#password = "$env{WSO2_SHARED_PWD}"
+#driver = "org.postgresql.Driver"
+#validationQuery = "SELECT 1"
+#pool_options.maxActive = 100
+#pool_options.maxWait = 10000
+#pool_options.validationInterval = 10000
 
 [transport.https.properties]
 proxyPort = 443
 server="MICADO API gateway"
 
-[database.apim_db]
-type = "postgre"
-url = "jdbc:postgresql://micado_db:5432/$env{POSTGRES_DB}"
-username = "$env{WSO2_API_USER}"
-password = "$env{WSO2_API_PWD}"
-driver = "org.postgresql.Driver"
-validationQuery = "SELECT 1"
-pool_options.maxActive = 50
-pool_options.maxWait = 30000
-
 #[database.apim_db]
-#type = "h2"
-#url = "jdbc:h2:./repository/database/WSO2AM_DB;AUTO_SERVER=TRUE;DB_CLOSE_ON_EXIT=FALSE"
-#username = "wso2carbon"
-#password = "wso2carbon"
+#type = "postgre"
+#url = "jdbc:postgresql://micado_db:5432/$env{POSTGRES_DB}"
+#username = "$env{WSO2_API_USER}"
+#password = "$env{WSO2_API_PWD}"
+#driver = "org.postgresql.Driver"
+#validationQuery = "SELECT 1"
+#pool_options.maxActive = 50
+#pool_options.maxWait = 30000
 
-#[database.shared_db]
-#type = "h2"
-#url = "jdbc:h2:./repository/database/WSO2SHARED_DB;DB_CLOSE_ON_EXIT=FALSE"
-#username = "wso2carbon"
-#password = "wso2carbon"
+[database.apim_db]
+type = "h2"
+url = "jdbc:h2:./repository/database/WSO2AM_DB;AUTO_SERVER=TRUE;DB_CLOSE_ON_EXIT=FALSE"
+username = "wso2carbon"
+password = "wso2carbon"
+
+[database.shared_db]
+type = "h2"
+url = "jdbc:h2:./repository/database/WSO2SHARED_DB;DB_CLOSE_ON_EXIT=FALSE"
+username = "wso2carbon"
+password = "wso2carbon"
 
 [keystore.tls]
 file_name =  "wso2carbon.jks"
@@ -130,10 +130,10 @@ proxyPort = 443
 #analytics_auth_url =["ssl://analytics1:7712","ssl://analytics2:7712"]
 #type = "failover"
 
-[apim.key_manager]
-service_url = "https://{{ENVI_VAR.env_identity_hostname}}/services/"
-username = "$env{WSO2_IDENTITY_ADMIN_USER}"
-password = "$env{WSO2_IDENTITY_ADMIN_PWD}"
+#[apim.key_manager]
+#service_url = "https://{{ENVI_VAR.env_identity_hostname}}/services/"
+#username = "$env{WSO2_IDENTITY_ADMIN_USER}"
+#password = "$env{WSO2_IDENTITY_ADMIN_PWD}"
 #pool.init_idle_capacity = 50
 #pool.max_idle = 100
 #key_validation_handler_type = "default"
