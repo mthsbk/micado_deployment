@@ -337,10 +337,14 @@ services:
          - identity.micadoproject.eu
   backend:
     image: micadoproject/backend
+    environment:
+      HOST: backend
 #    ports:
 #      - "3001:3000"
     networks:
-      - micado_net
+      micado_net:
+        aliases:
+         - backend
 
 # DASHBOARD
   dashboard:

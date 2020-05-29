@@ -6,7 +6,7 @@ env_api_hostname = "$env{API_HOSTNAME}"
 hostname = "$env{IDENTITY_HOSTNAME}"
 node_ip = "0.0.0.0"
 #base_path = "https://$ref{server.hostname}"
-base_path = "https://$ref{server.hostname}:${carbon.management.port}"
+base_path = "https://$ref{server.hostname}"
 serverDetails = "WSO2 IS as KM 5.9.0"
 mode = "single"
 userAgent = "WSO2 IS as KM 5.9.0"
@@ -66,14 +66,18 @@ pool_options.validationInterval = 10000
 #password = "wso2carbon"
 
 [keystore.primary]
-file_name = "micadokeystore.jks"
-password = "micadostorepass"
+#file_name = "micadokeystore.jks"
+file_name = "wso2carbon.jks"
+#password = "micadostorepass"
+password = "wso2carbon"
 alias = "micadocert"
 key_password = "micadokeypass"
 
 [truststore]
-file_name = "micado-truststore.jks"
-password = "wso2carbonmicado"
+#file_name = "micado-truststore.jks"
+#password = "wso2carbonmicado"
+file_name = "client-truststore.jks"
+password = "wso2carbon"
 
 
 [identity]
