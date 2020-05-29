@@ -408,12 +408,18 @@ services:
 
   chatbot:
     image: rasa/rasa:latest-full
-    volumes:
-      - /home/gioppo/Development/dockerfiles/micado_new/rasa:/app
+ #   volumes:
+ #     - /home/gioppo/Development/dockerfiles/micado_new/rasa:/app
     command:
+#      - train
       - run
       - --cors
       - "*"
+      - -p
+      - "5005"
+      - --enable-api
+      - --auth-token
+      - "thisismysecret"
     volumes:
       - type: volume
         source: chatbot_data
