@@ -536,7 +536,7 @@ services:
 
 
   weblate:
-    image: weblate/weblate:4.0.4-1
+    image: weblate/weblate:4.1.2
     volumes:
       - weblate_data:/app/data
     env_file:
@@ -589,7 +589,7 @@ services:
       - micado_net
 
   git:
-    image: gitea/gitea:1.11.3
+    image: gitea/gitea:1.12.2
     networks:
       - micado_net
     env_file:
