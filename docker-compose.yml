@@ -539,6 +539,8 @@ services:
     image: weblate/weblate:4.1.1-2
     volumes:
       - weblate_data:/app/data
+      - ./weblate/0007_use_trigram.py:/usr/local/lib/python3.7/dist-packages/weblate/memory/migrations/0007_use_trigram.py
+      - ./weblate/0008_adjust_similarity.py:/usr/local/lib/python3.7/dist-packages/weblate/memory/migrations/0008_adjust_similarity.py
     env_file:
       - prod.env
     environment:
